@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, FlatList, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, FlatList, Button, Modal } from 'react-native';
 import { useState } from 'react';
 import { database, storage} from './firebase'
-import { Modal } from 'react-native-web';
+import Login from './login';
 
 export default function App() {
  const [modalVisible, setModalVisible] = useState(false)
@@ -11,11 +11,12 @@ export default function App() {
  const [author, setAuthor] = useState('')
  const [startDate, setStartDate] = useState('')
  const [endDate, setEndDate] = useState('')
+ const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  return (
+  return isLoggedIn ?(
     <View style={styles.container}>
-      <Text>Welcome to BookShare</Text>
-      <Text>A place where you can recommend books to other book lovers</Text>
+      <Text>Welcome to Mybooks</Text>
+      <Text>A place where you can handle your books</Text>
 
       <Button title='Add book' onPress={() => setModalVisible(true)}/>
 
@@ -78,17 +79,14 @@ export default function App() {
             onPress={() => setModalVisible(false)} 
             color="red"
           />
-
-
         </View>
       </Modal>
 
-  
-      
       <StatusBar style="auto" />
     </View>
-  );
-}
+  ): (
+  <Login onLogin={() => setIsLoggedIn(true)}></Login>
+);}
 
 const styles = StyleSheet.create({
   container: {
