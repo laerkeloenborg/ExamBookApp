@@ -1,12 +1,22 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Text, View } from "react-native";
+import { Text, View,Button  } from "react-native";
+import { useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Login from "./components/Login.js"
+import { getAuth, signOut } from "firebase/auth";
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
-   
+  const [loggedIn, setLoggedIn] = useState(false) 
+
+  if(!loggedIn){
+    return(
+      <Login onLogin={() => setLoggedIn(true)}></Login>
+    )
+  }
+
   return (
     <NavigationContainer>
       <Tab.Navigator 
@@ -44,10 +54,11 @@ export default function App() {
           component={AddBookPage}
         />
 
-        <Tab.Screen
-          name="Profile"
-          component={ProfilePage}
-        />
+        <Tab.Screen name="Profile">
+            {() => (
+              <ProfilePage onLogout={() => setLoggedIn(false)}/>
+            )}
+        </Tab.Screen>
 
       </Tab.Navigator>
     </NavigationContainer>
@@ -71,10 +82,18 @@ function AddBookPage(){
   )
 }
 
-function ProfilePage(){
+function ProfilePage({onLogout}){
+
+  async function logout() {
+    await signOut(getAuth());
+    onLogout();
+  }
+
   return (
      <View>
-      <Text>Dig</Text>
+      <Text>Logout</Text>
+
+      <Button title="Logout" onPress={logout}/>
     </View>
   )
 }
