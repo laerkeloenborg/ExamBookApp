@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { StyleSheet, Text, View, Button, TextInput, Platform } from 'react-native';
-import { app } from './firebase';
+import { app } from '../firebase';
 import {getAuth, signInWithEmailAndPassword, signOut, signInWithCredential, createUserWithEmailAndPassword, onAuthStateChanged
     ,initializeAuth, getReactNativePersistence, GoogleAuthProvider
 } from 'firebase/auth'

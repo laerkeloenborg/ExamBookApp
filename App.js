@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, FlatList, Button, Modal } from 'react-native';
 import { useState } from 'react';
 import { database, storage} from './firebase'
-import Login from './login';
+import Login from './components/login';
 
 export default function App() {
  const [modalVisible, setModalVisible] = useState(false)
