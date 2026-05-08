@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, FlatList, Button, Modal } from 'react-native';
 import { useState } from 'react';
 import { database, storage } from './firebase'
-import Login from './components/login';
+import Login from './components/Login';
 import Books from './components/Books';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
