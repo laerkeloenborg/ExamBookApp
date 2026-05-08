@@ -1,98 +1,99 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, FlatList, Button, Modal } from 'react-native';
-import { useState } from 'react';
-import { database, storage} from './firebase'
-import Login from './components/login';
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Text, View,Button  } from "react-native";
+import { useState } from "react";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Login from "./components/Login.js"
+import { getAuth, signOut } from "firebase/auth";
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
- const [modalVisible, setModalVisible] = useState(false)
- const [title, setTitle] = useState('')
- const [description, setDescription] = useState('')
- const [author, setAuthor] = useState('')
- const [startDate, setStartDate] = useState('')
- const [endDate, setEndDate] = useState('')
- const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(false) 
 
-  return isLoggedIn ?(
-    <View style={styles.container}>
-      <Text>Welcome to Mybooks</Text>
-      <Text>A place where you can handle your books</Text>
+  if(!loggedIn){
+    return(
+      <Login onLogin={() => setLoggedIn(true)}></Login>
+    )
+  }
 
-      <Button title='Add book' onPress={() => setModalVisible(true)}/>
+  return (
+    <NavigationContainer>
+      <Tab.Navigator 
+        screenOptions= {({route}) => ({
+          tabBarIcon: ({focused, color, size}) => {
+            let iconName
 
-      <Modal visible={modalVisible}>
-        <View style={styles.container}>
-           <Text style={styles.header}>Add a new book</Text>
+            if(route.name === "Home"){
+              iconName = focused ? "home" : "home-outline"
+            }
+            else if(route.name === "Book"){
+              iconName = focused ? "book" : "book-outline"
+            }
+            else if(route.name === "Profile"){
+              iconName = focused ? "person" : "person-outline"
+            }
 
-          <TextInput
-            placeholder='Book title'
-            value={title}
-            onChangeText={setTitle}
-            style={styles.input}
-          />
+            return (
+              <Ionicons name={iconName} size={size} color={color}/>
+            )
+          },
+           
+           tabBarActiveTintColor: "#254F50",
+           tabBarInactiveTintColor: "gray"
+        })}
+      >
 
-          <TextInput
-            placeholder='Book description'
-            value={description}
-            onChangeText={setDescription}
-            style={styles.input}
-          />
+        <Tab.Screen
+          name="Home"
+          component={HomePage}
+        />
 
-          <TextInput
-            placeholder='Author'
-            value={author}
-            onChangeText={setAuthor}
-            style={styles.input}
-          />
+        <Tab.Screen
+          name="Book"
+          component={AddBookPage}
+        />
 
-          <TextInput 
-          placeholder='Start date'
-          value={startDate}
-          onChangeText={setStartDate}
-          style={styles.input}
-          />
+        <Tab.Screen name="Profile">
+            {() => (
+              <ProfilePage onLogout={() => setLoggedIn(false)}/>
+            )}
+        </Tab.Screen>
 
-          <TextInput 
-          placeholder='End date'
-          value={endDate}
-          onChangeText={setEndDate}
-          style={styles.input}
-          />
+      </Tab.Navigator>
+    </NavigationContainer>
+  )
 
-           <Button 
-            title='Save book' 
-            onPress={() => {
-              console.log(title, description, author, startDate, endDate);
+}
 
-              setTitle('')
-              setDescription('')
-              setAuthor('')
-              setStartDate('')
-              setEndDate('')
-            
-              setModalVisible(false);
-            }} 
-          />
-
-          <Button 
-            title="Cancel" 
-            onPress={() => setModalVisible(false)} 
-            color="red"
-          />
-        </View>
-      </Modal>
-
-      <StatusBar style="auto" />
+function HomePage(){
+  return(
+     <View>
+      <Text>Hej</Text>
     </View>
-  ): (
-  <Login onLogin={() => setIsLoggedIn(true)}></Login>
-);}
+  )
+}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+function AddBookPage(){
+  return (
+    <View>
+      <Text>Med</Text>
+    </View>
+  )
+}
+
+function ProfilePage({onLogout}){
+
+  async function logout() {
+    await signOut(getAuth());
+    onLogout();
+  }
+
+  return (
+     <View>
+      <Text>Logout</Text>
+
+      <Button title="Logout" onPress={logout}/>
+    </View>
+  )
+}
