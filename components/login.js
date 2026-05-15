@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { StyleSheet, Text, View, Button, TextInput, Platform, Modal } from 'react-native';
 import { app } from '../firebase';
 import {getAuth, signInWithEmailAndPassword, signOut, signInWithCredential, createUserWithEmailAndPassword, onAuthStateChanged
-    ,initializeAuth, getReactNativePersistence, GoogleAuthProvider
+    ,initializeAuth, getReactNativePersistence, GoogleAuthProvider, updateProfile
 } from 'firebase/auth'
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage'
 import * as LocalAuthentication from 'expo-local-authentication'
@@ -29,8 +29,8 @@ export default function Login({onLogin}){
     const [enteredEmail, setEnteredEmail] = useState("")
     const [enteredPassword, setEnteredPassword] = useState("")
     const [userId, setUserId] = useState(null)
-    const [user, setUser] = useState(null)
     const [modalVisible, setModalVisible] = useState(false)
+    const [enteredName, setEnteredName] = useState("")
     
     const [request, response, promptAsync] = Google.useAuthRequest({
         scopes: ["profile","email"],
@@ -81,16 +81,15 @@ export default function Login({onLogin}){
     async function signUp(){
         try {
             const credentials = await createUserWithEmailAndPassword(auth, enteredEmail, enteredPassword)
+            await updateProfile(credentials.user, {
+                displayName: enteredName
+            })
             console.log("signed up as: ", credentials.user.uid)
             setUserId(credentials.user.uid)
             onLogin()
         } catch(error){
             console.log("Create user error: ", JSON.stringify(error))
         }
-    }
-
-    async function handleSignOut(){
-        await signOut(auth)
     }
 
     async function handleBioLogin(){
@@ -125,18 +124,19 @@ export default function Login({onLogin}){
                 <Button title='Google login' onPress={()=>promptAsync()}/>
                 <Button title='Log in with bio' onPress={handleBioLogin}/>
                 <Text>Login</Text>
-                <TextInput placeholder="Email" onChangeText={newText => setEnteredEmail(newText)} value={enteredEmail} style={Styles.input}/>
-                <TextInput placeholder="Password" onChangeText={newText => setEnteredPassword(newText)} value={enteredPassword} style={Styles.input} secureTextEntry/>
+                <TextInput placeholder="Email" onChangeText={newText => setEnteredEmail(newText)} value={enteredEmail} style={styles.input}/>
+                <TextInput placeholder="Password" onChangeText={newText => setEnteredPassword(newText)} value={enteredPassword} style={styles.input} secureTextEntry/>
                 <Button title='Log in' onPress={login} />
-                <Text style={Styles.signUpText} onPress={()=> setModalVisible(true)}>Sign up</Text>
+                <Text style={styles.signUpText} onPress={()=> setModalVisible(true)}>Sign up</Text>
 
                 <Modal visible={modalVisible}>
-                    <View style={Styles.modalContainer}>
-                        <View style={Styles.modalContent}>
-                            <Text style={Styles.modalTitle}>Create user</Text>
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <Text style={styles.modalTitle}>Create user</Text>
 
-                            <TextInput placeholder="Email" value={enteredEmail} onChangeText={setEnteredEmail} style={Styles.input}/>
-                            <TextInput placeholder="Password" value={enteredPassword} onChangeText={setEnteredPassword} secureTextEntry style={Styles.input}/>
+                            <TextInput placeholder="Name" value={enteredName} onChangeText={setEnteredName} style={styles.input}/>
+                            <TextInput placeholder="Email" value={enteredEmail} onChangeText={setEnteredEmail} style={styles.input}/>
+                            <TextInput placeholder="Password" value={enteredPassword} onChangeText={setEnteredPassword} secureTextEntry style={styles.input}/>
                             <Button title="Create user" onPress={() => {signUp(), setModalVisible(false)}}/>
                             <Button title="Cancel" onPress={() => setModalVisible(false)}/>
 
@@ -152,7 +152,7 @@ export default function Login({onLogin}){
 
 }
 
-const Styles = StyleSheet.create({
+const styles = StyleSheet.create({
     signUpText: {
         marginTop: 10,
         color: 'blue',
