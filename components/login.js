@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { StyleSheet, Text, View, Button, TextInput, Platform } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Platform, Modal } from 'react-native';
 import { app } from '../firebase';
 import {getAuth, signInWithEmailAndPassword, signOut, signInWithCredential, createUserWithEmailAndPassword, onAuthStateChanged
     ,initializeAuth, getReactNativePersistence, GoogleAuthProvider
@@ -14,18 +14,23 @@ let auth
 if(Platform.OS === "web"){
     auth = getAuth(app)
 } else {
-    auth = initializeAuth(app, {
-        persistence:getReactNativePersistence(ReactNativeAsyncStorage)
-    })
+    try{
+        auth = initializeAuth(app, {
+            persistence:getReactNativePersistence(ReactNativeAsyncStorage)
+        })
+    } catch (error){
+        auth = getAuth(app)
+    }
 }
 
 WebBrowser.maybeCompleteAuthSession()
 
 export default function Login({onLogin}){
-    const [enteredEmail, setEnteredEmail] = useState("laca@ek.dk")
-    const [enteredPassword, setEnteredPassword] = useState("test1234")
+    const [enteredEmail, setEnteredEmail] = useState("")
+    const [enteredPassword, setEnteredPassword] = useState("")
     const [userId, setUserId] = useState(null)
     const [user, setUser] = useState(null)
+    const [modalVisible, setModalVisible] = useState(false)
     
     const [request, response, promptAsync] = Google.useAuthRequest({
         scopes: ["profile","email"],
@@ -120,13 +125,25 @@ export default function Login({onLogin}){
                 <Button title='Google login' onPress={()=>promptAsync()}/>
                 <Button title='Log in with bio' onPress={handleBioLogin}/>
                 <Text>Login</Text>
-                <TextInput onChangeText={newText => setEnteredEmail(newText)} value={enteredEmail}/>
-                <TextInput onChangeText={newText => setEnteredPassword(newText)} value={enteredPassword}/>
+                <TextInput placeholder="Email" onChangeText={newText => setEnteredEmail(newText)} value={enteredEmail} style={Styles.input}/>
+                <TextInput placeholder="Password" onChangeText={newText => setEnteredPassword(newText)} value={enteredPassword} style={Styles.input} secureTextEntry/>
                 <Button title='Log in' onPress={login} />
+                <Text style={Styles.signUpText} onPress={()=> setModalVisible(true)}>Sign up</Text>
 
-                <TextInput onChangeText={newText => setEnteredEmail(newText)} value={enteredEmail}/>
-                <TextInput onChangeText={newText => setEnteredPassword(newText)} value={enteredPassword}/>
-                <Button title='Sign up' onPress={signUp}/>
+                <Modal visible={modalVisible}>
+                    <View style={Styles.modalContainer}>
+                        <View style={Styles.modalContent}>
+                            <Text style={Styles.modalTitle}>Create user</Text>
+
+                            <TextInput placeholder="Email" value={enteredEmail} onChangeText={setEnteredEmail} style={Styles.input}/>
+                            <TextInput placeholder="Password" value={enteredPassword} onChangeText={setEnteredPassword} secureTextEntry style={Styles.input}/>
+                            <Button title="Create user" onPress={() => {signUp(), setModalVisible(false)}}/>
+                            <Button title="Cancel" onPress={() => setModalVisible(false)}/>
+
+                        </View>
+                    </View>
+                </Modal>
+
             </>
             }
             
@@ -134,3 +151,39 @@ export default function Login({onLogin}){
     )
 
 }
+
+const Styles = StyleSheet.create({
+    signUpText: {
+        marginTop: 10,
+        color: 'blue',
+        textAlign: 'center'
+    },
+
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)'
+    },
+
+    modalContent: {
+        width: '80%',
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10
+    },
+
+    modalTitle: {
+        fontSize: 20,
+        marginBottom: 15,
+        textAlign: 'center'
+    },
+
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 5
+    }
+})
