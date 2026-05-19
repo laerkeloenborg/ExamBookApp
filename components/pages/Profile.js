@@ -4,6 +4,7 @@ import { signOut, getAuth } from "firebase/auth"
 
 export default function Profile({ onLogout }) {
     const [name, setName] = useState("")
+    const [mail, setMail] = useState("")    
     const [modalVisible, setModalVisible] = useState(false)
 
     useEffect(() => {
@@ -11,6 +12,7 @@ export default function Profile({ onLogout }) {
 
         if(user){
             setName(user.displayName)
+            setMail(user.email)
         }
     },[])
 
@@ -34,6 +36,7 @@ export default function Profile({ onLogout }) {
                     <Image source={{uri: "https://cdn-icons-png.flaticon.com/512/149/149071.png"}}style={styles.largeProfileImage}/>
 
                     <Text>{name}</Text>
+                    <Text>{mail}</Text>
         
                     <Button title="Close" onPress={() => setModalVisible(false)}/>
 
