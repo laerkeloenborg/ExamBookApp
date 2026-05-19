@@ -1,10 +1,12 @@
 import { View, Text, Button, StyleSheet, Image, Pressable, Modal } from "react-native"
 import { useState, useEffect } from "react"
 import { signOut, getAuth } from "firebase/auth"
+import { takePhoto, pickImageFromGallery } from "../Camera.js"
 
 export default function Profile({ onLogout }) {
     const [name, setName] = useState("")
-    const [mail, setMail] = useState("")    
+    const [mail, setMail] = useState("")
+    const [image, setImage] = useState("")
     const [modalVisible, setModalVisible] = useState(false)
 
     useEffect(() => {
@@ -26,17 +28,20 @@ export default function Profile({ onLogout }) {
             <View style={styles.header}>
                 <Text style={styles.title}>{name}'s bookshelf</Text>
                 <Pressable onPress={() => setModalVisible(true)}>
-                    <Image source={{uri: "https://cdn-icons-png.flaticon.com/512/149/149071.png"}} style={styles.profileImage}/>
+                    <Image source={{uri: image || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}} style={styles.profileImage}/>
                 </Pressable>
             </View>
 
             <Modal visible={modalVisible}>
                 <View style={styles.modalContainer}>
                     <Text style={styles.modalTitle}>Profile settings</Text>
-                    <Image source={{uri: "https://cdn-icons-png.flaticon.com/512/149/149071.png"}}style={styles.largeProfileImage}/>
+                    <Image source={{uri: image || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}}style={styles.largeProfileImage}/>
 
                     <Text>{name}</Text>
                     <Text>{mail}</Text>
+
+                    <Button title="Choose from gallery" onPress={()=>pickImageFromGallery(setImage)}/>
+                    <Button title="Take photo" onPress={()=>takePhoto(setImage)}/>
         
                     <Button title="Close" onPress={() => setModalVisible(false)}/>
 
