@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { StyleSheet, Text, View, Button, TextInput, Platform, Modal } from 'react-native';
-import { app } from '../firebase';
+import { app } from '../../firebase';
 import {getAuth, signInWithEmailAndPassword, signOut, signInWithCredential, createUserWithEmailAndPassword, onAuthStateChanged
     ,initializeAuth, getReactNativePersistence, GoogleAuthProvider, updateProfile
 } from 'firebase/auth'
@@ -91,6 +91,7 @@ export default function Login({onLogin}){
             console.log("Create user error: ", JSON.stringify(error))
         }
     }
+
 
     async function handleBioLogin(){
         const hasHardware = await LocalAuthentication.hasHardwareAsync()

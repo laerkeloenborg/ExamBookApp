@@ -1,12 +1,11 @@
 import { Text, View, Button} from 'react-native';
 import { useState } from 'react';
-import Login from './components/Login';
+import Login from './components/pages/Login';
 import Books from './components/Books';
 import Profile from './components/pages/Profile';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { getAuth, signOut } from "firebase/auth";
 
 const Tab = createBottomTabNavigator();
 
