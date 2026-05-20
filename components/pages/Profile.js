@@ -1,7 +1,10 @@
-import { View, Text, Button, StyleSheet, Image, Pressable, Modal, Alert } from "react-native"
+import { View, Text, Image, Pressable, Modal, Alert } from "react-native"
 import { useState, useEffect } from "react"
 import { signOut, getAuth, deleteUser } from "firebase/auth"
 import { takePhoto, pickImageFromGallery } from "../Camera.js"
+import styles from "../../styles/ProfileStyling.js"
+import colors from "../../styles/Colors.js"
+import { LinearGradient } from "expo-linear-gradient"
 
 export default function Profile({ onLogout }) {
     const [name, setName] = useState("")
@@ -48,7 +51,12 @@ export default function Profile({ onLogout }) {
     }
 
     return (
-        <View style={styles.container}>
+        <LinearGradient
+            colors={colors.gradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.container}
+        >
             <View style={styles.header}>
                 <Text style={styles.title}>{name}'s bookshelf</Text>
                 <Pressable onPress={() => setModalVisible(true)}>
@@ -58,79 +66,37 @@ export default function Profile({ onLogout }) {
 
             <Modal visible={modalVisible}>
                 <View style={styles.modalContainer}>
-                    <Text style={styles.modalTitle}>Profile settings</Text>
-                    <Image source={{uri: image || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}}style={styles.largeProfileImage}/>
-                    <Button title="Choose from gallery" onPress={()=>pickImageFromGallery(setImage)}/>
-                    <Button title="Take photo" onPress={()=>takePhoto(setImage)}/>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Profile settings</Text>
+                        <Image source={{uri: image || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}}style={styles.largeProfileImage}/>
+                   
+                        <Pressable style={styles.modalButton} onPress={() => {pickImageFromGallery(setImage)}}>
+                            <Text style={styles.buttonText}>Choose from gallery</Text>
+                        </Pressable>
 
-                    <Text>{name}</Text>
-                    <Text>{mail}</Text>
-        
-                    <Pressable style={styles.deleteButton} onPress={handleDeleteUser}>
-                        <Text style={styles.deleteButtonText}>Delete user</Text>
-                    </Pressable>
-                    <Button title="Close" onPress={() => setModalVisible(false)}/>
+                        <Pressable style={styles.modalButton} onPress={() => {takePhoto(setImage)}}>
+                            <Text style={styles.buttonText}>Take photo</Text>
+                        </Pressable>
 
+                        <View style={styles.userInfo}>
+                            <Text style={styles.userName}>{name}</Text>
+                            <Text style={styles.userMail}>{mail}</Text>
+                        </View>
+
+                        <Pressable style={[styles.modalButton, styles.deleteButton]} onPress={handleDeleteUser}>
+                            <Text style={styles.buttonText}>Delete user</Text>
+                        </Pressable>
+                    
+                        <Pressable style={styles.modalButton} onPress={() => {setModalVisible(false)}}>
+                            <Text style={styles.buttonText}>Close</Text>
+                        </Pressable>
+                    </View>
                 </View>
             </Modal>
 
-            <Button
-                title="Logout"
-                onPress={logout}
-            />
-        </View>
+            <Pressable style={styles.logoutButton} onPress={logout}>
+                <Text style={styles.buttonText}>Logout</Text>
+            </Pressable>
+        </LinearGradient>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20
-    },
-
-    header: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: 30
-    },
-
-    title: {
-        fontSize: 28,
-        fontWeight: "bold"
-    },
-
-    profileImage: {
-        width: 70,
-        height: 70,
-        borderRadius: 35
-    }, 
-    modalContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 20
-    },
-    modalTitle: {
-        fontSize: 24,
-        fontWeight: "bold",
-        marginBottom: 20
-    },
-    largeProfileImage: {
-        width: 150,
-        height: 150,
-        borderRadius: 75,
-        marginBottom: 20
-    },
-    deleteButton: {
-        backgroundColor: "red",
-        padding: 15,
-        borderRadius: 10,
-        alignItems: "center"
-    },
-    deleteButtonText: {
-        color: "white",
-        fontWeight: "bold",
-        fontSize: 16
-    }
-})

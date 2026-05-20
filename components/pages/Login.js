@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Text, View, Button, TextInput, Platform, Modal, Pressable } from 'react-native';
+import { Text, View, TextInput, Platform, Modal, Pressable } from 'react-native';
 import { app } from '../../firebase';
 import {getAuth, signInWithEmailAndPassword, signOut, signInWithCredential, createUserWithEmailAndPassword, onAuthStateChanged
     ,initializeAuth, getReactNativePersistence, GoogleAuthProvider, updateProfile
@@ -36,7 +36,7 @@ export default function Login({onLogin}){
     const [enteredName, setEnteredName] = useState("")
     
     const [request, response, promptAsync] = Google.useAuthRequest({
-        expoClientId: "664617534907-0984pscc8kbi7a1gdmhrntt9f4j3iu2j.apps.googleusercontent.com",
+        iosClientId: "YOUR_IOS_CLIENT_ID.apps.googleusercontent.com",
         androidClientId: "910602000048-ejrer6kp6jgaafd10nktu6gq9tmi3lsj.apps.googleusercontent.com",
         scopes: ["profile","email"],
         redirectUri: AuthSession.makeRedirectUri({
