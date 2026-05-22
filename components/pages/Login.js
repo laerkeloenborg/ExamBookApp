@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { StyleSheet, Text, View, Button, TextInput, Platform, Modal } from 'react-native';
-import { app } from '../firebase';
+import { Text, View, TextInput, Platform, Modal, Pressable } from 'react-native';
+import { app } from '../../firebase';
 import {getAuth, signInWithEmailAndPassword, signOut, signInWithCredential, createUserWithEmailAndPassword, onAuthStateChanged
     ,initializeAuth, getReactNativePersistence, GoogleAuthProvider, updateProfile
 } from 'firebase/auth'
@@ -9,6 +9,9 @@ import * as LocalAuthentication from 'expo-local-authentication'
 import * as WebBrowser from 'expo-web-browser'
 import * as Google from 'expo-auth-session/providers/google'
 import * as AuthSession from 'expo-auth-session'
+import styles from "../../styles/LoginStyling.js"
+import { LinearGradient } from "expo-linear-gradient";
+import colors from "../../styles/Colors.js"
 
 let auth
 if(Platform.OS === "web"){
@@ -33,11 +36,11 @@ export default function Login({onLogin}){
     const [enteredName, setEnteredName] = useState("")
     
     const [request, response, promptAsync] = Google.useAuthRequest({
-        scopes: ["profile","email"],
-        iosClientId: "",
+        iosClientId: "YOUR_IOS_CLIENT_ID.apps.googleusercontent.com",
         androidClientId: "910602000048-ejrer6kp6jgaafd10nktu6gq9tmi3lsj.apps.googleusercontent.com",
+        scopes: ["profile","email"],
         redirectUri: AuthSession.makeRedirectUri({
-            native: ""
+            native: "com.googleusercontent.apps.910602000048-ejrer6kp6jgaafd10nktu6gq9tmi3lsj:/oauth2redirect/google"
         })
     })
 
@@ -48,7 +51,9 @@ export default function Login({onLogin}){
             const {id_token, access_token} = response.params
             const credential = GoogleAuthProvider.credential(id_token, access_token)
             signInWithCredential(auth, credential)
-            .then((userCredential) => setUserId(userCredential.user.uid), onLogin())
+            .then((userCredential) => {
+                setUserId(userCredential.user.uid)
+                onLogin()})
             .catch((error) => console.log("Google login error: ", error))
         }
     }, [response])
@@ -92,6 +97,7 @@ export default function Login({onLogin}){
         }
     }
 
+
     async function handleBioLogin(){
         const hasHardware = await LocalAuthentication.hasHardwareAsync()
         if(!hasHardware){
@@ -116,74 +122,66 @@ export default function Login({onLogin}){
             alert("Not logged in with biometrics")
         }
     }
-    () => promptAsync()
+   
     return(
-        <View>
+        <LinearGradient
+            colors={colors.gradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.container}
+        >
             {!userId && 
             <>
-                <Button title='Google login' onPress={()=>promptAsync()}/>
-                <Button title='Log in with bio' onPress={handleBioLogin}/>
-                <Text>Login</Text>
+                <Text style={styles.title}>BookShare</Text>
+                <Pressable style={[styles.button, styles.googleButton]} onPress={() => promptAsync({useProxy: true})}>
+                    <Text style={styles.buttonText}>Google login</Text>
+                </Pressable>
+    
+                <Pressable style={[styles.button, styles.bioAndModalButton]} onPress={handleBioLogin}>
+                    <Text style={styles.buttonText}>Log in with bio</Text>
+                </Pressable>
+                
+                <Text style={styles.title}>Login</Text>
+
                 <TextInput placeholder="Email" onChangeText={newText => setEnteredEmail(newText)} value={enteredEmail} style={styles.input}/>
                 <TextInput placeholder="Password" onChangeText={newText => setEnteredPassword(newText)} value={enteredPassword} style={styles.input} secureTextEntry/>
-                <Button title='Log in' onPress={login} />
+                
+                <Pressable style={[styles.button, styles.loginButton]} onPress={login}>
+                    <Text style={styles.buttonText}>Log in</Text>
+                </Pressable>
+                
                 <Text style={styles.signUpText} onPress={()=> setModalVisible(true)}>Sign up</Text>
 
-                <Modal visible={modalVisible}>
-                    <View style={styles.modalContainer}>
+                <Modal visible={modalVisible} transparent animationType="fade">
+                     <LinearGradient
+                        colors={colors.gradient}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.modalContainer}
+                    >
                         <View style={styles.modalContent}>
                             <Text style={styles.modalTitle}>Create user</Text>
 
                             <TextInput placeholder="Name" value={enteredName} onChangeText={setEnteredName} style={styles.input}/>
                             <TextInput placeholder="Email" value={enteredEmail} onChangeText={setEnteredEmail} style={styles.input}/>
                             <TextInput placeholder="Password" value={enteredPassword} onChangeText={setEnteredPassword} secureTextEntry style={styles.input}/>
-                            <Button title="Create user" onPress={() => {signUp(), setModalVisible(false)}}/>
-                            <Button title="Cancel" onPress={() => setModalVisible(false)}/>
+                            
+                            <Pressable style={[styles.button, styles.bioAndModalButton]} onPress={()=> {signUp(), setModalVisible(false)}}>
+                                <Text style={styles.buttonText}>Create user</Text>
+                            </Pressable>
+                            
+                            <Pressable style={[styles.button, styles.bioAndModalButton]} onPress={()=>{setModalVisible(false)}}>
+                                <Text style={styles.buttonText}>Cancel</Text>
+                            </Pressable>
 
                         </View>
-                    </View>
+                    </LinearGradient>
                 </Modal>
 
             </>
             }
             
-        </View>
+        </LinearGradient>
     )
 
 }
-
-const styles = StyleSheet.create({
-    signUpText: {
-        marginTop: 10,
-        color: 'blue',
-        textAlign: 'center'
-    },
-
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)'
-    },
-
-    modalContent: {
-        width: '80%',
-        backgroundColor: 'white',
-        padding: 20,
-        borderRadius: 10
-    },
-
-    modalTitle: {
-        fontSize: 20,
-        marginBottom: 15,
-        textAlign: 'center'
-    },
-
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        marginBottom: 10,
-        padding: 10,
-        borderRadius: 5
-    }
-})

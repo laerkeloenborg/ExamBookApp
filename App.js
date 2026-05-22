@@ -1,12 +1,11 @@
-import { Text, View, Button} from 'react-native';
 import { useState } from 'react';
-import Login from './components/Login';
-import Books from './components/Books';
+import Login from './components/pages/Login';
 import Profile from './components/pages/Profile';
+import Home from './components/pages/Home'
+import AddBook from './components/pages/AddBook'
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { getAuth, signOut } from "firebase/auth";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,6 +22,8 @@ export default function App() {
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
+          headerShown: false,
+          
           tabBarIcon: ({ focused, color, size }) => {
             let iconName
 
@@ -48,12 +49,12 @@ export default function App() {
 
         <Tab.Screen
           name="Home"
-          component={HomePage}
+          component={Home}
         />
 
         <Tab.Screen
           name="Book"
-          component={AddBookPage}
+          component={AddBook}
         />
 
         <Tab.Screen name="Profile">
@@ -68,17 +69,3 @@ export default function App() {
 
 }
 
-function HomePage() {
-  return (
-    <View>
-      <Text>Hej</Text>
-    </View>
-  )
-}
-
-
-function AddBookPage() {
-  return (
-    <Books />
-  )
-}

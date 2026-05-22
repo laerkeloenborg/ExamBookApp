@@ -21,7 +21,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.ExamBookApp"
+      "package": "com.camilaerke.BookShelf"
     },
     "web": {
       "favicon": "./assets/favicon.png",

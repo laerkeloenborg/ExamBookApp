@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "664617534907",
+    "project_id": "bookapp-fc266",
+    "storage_bucket": "bookapp-fc266.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664617534907:android:3f9ea65d6c6602ebb7309e",
+        "android_client_info": {
+          "package_name": "com.camilaerke.BookShelf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664617534907-0984pscc8kbi7a1gdmhrntt9f4j3iu2j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnwgdH4gnR0CLfH5sxrcOCeCYRuWwgJcI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "664617534907-0984pscc8kbi7a1gdmhrntt9f4j3iu2j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
