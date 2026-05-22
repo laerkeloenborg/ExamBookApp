@@ -48,7 +48,8 @@ export default StyleSheet.create({
         padding: 16,
         borderRadius: 15,
         alignItems: "center",
-        marginBottom: 12
+        marginBottom: 12,
+        
     },
 
     googleButton: {
@@ -61,7 +62,8 @@ export default StyleSheet.create({
 
     loginButton: {
         backgroundColor: colors.primaryBlue,
-        marginTop: 10
+        marginTop: 10,
+        backgroundColor: colors.solidGreen
     },
 
     cancelButton: {

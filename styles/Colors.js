@@ -13,5 +13,8 @@ export default {
 
     googleBlue: "#4285F4",
     bioGreen: "#52b788",
-    gradient: ["#00b4d8", "#80ed99", "#d9f99d"]
+    gradient: ["#00b4d8", "#80ed99", "#d9f99d"],
+
+    solidGreen: "#046159"
 }
+
