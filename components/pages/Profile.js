@@ -1,6 +1,6 @@
 import { View, Text, Image, Pressable, Modal, Alert } from "react-native"
 import { useState, useEffect } from "react"
-import { signOut, getAuth, deleteUser } from "firebase/auth"
+import { signOut, getAuth, deleteUser, updateProfile } from "firebase/auth"
 import { takePhoto, pickImageFromGallery } from "../Camera.js"
 import styles from "../../styles/ProfileStyling.js"
 import colors from "../../styles/Colors.js"
@@ -18,6 +18,7 @@ export default function Profile({ onLogout }) {
         if(user){
             setName(user.displayName)
             setMail(user.email)
+            setImage(user.photoURL)
         }
     },[])
 
@@ -50,6 +51,21 @@ export default function Profile({ onLogout }) {
         )
     }
 
+    async function saveProfileImage(imageUri){
+        try {
+            const user = getAuth().currentUser
+
+            if (user){
+                await updateProfile(user, {
+                    photoURL: imageUri
+                })
+                setImage(imageUri)
+            }
+        } catch (error){
+            console.log("Image save error: ", error)
+        }
+    }
+
     return (
         <LinearGradient
             colors={colors.gradient}
@@ -70,11 +86,23 @@ export default function Profile({ onLogout }) {
                         <Text style={styles.modalTitle}>Profile settings</Text>
                         <Image source={{uri: image || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}}style={styles.largeProfileImage}/>
                    
-                        <Pressable style={styles.modalButton} onPress={() => {pickImageFromGallery(setImage)}}>
+                        <Pressable style={styles.modalButton} onPress={async () => {
+                            const imageUri = await pickImageFromGallery(setImage)
+                            
+                            if(imageUri){
+                                saveProfileImage(imageUri)
+                            }
+                            }}>
                             <Text style={styles.buttonText}>Choose from gallery</Text>
                         </Pressable>
 
-                        <Pressable style={styles.modalButton} onPress={() => {takePhoto(setImage)}}>
+                        <Pressable style={styles.modalButton} onPress={async () => {
+                            const imageUri = await takePhoto()
+
+                            if(imageUri){
+                                saveProfileImage(imageUri)
+                            }
+                        }}>
                             <Text style={styles.buttonText}>Take photo</Text>
                         </Pressable>
 
