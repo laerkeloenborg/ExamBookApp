@@ -17,6 +17,24 @@ export default function Home() {
         fetchBooks("romance", setRomanceBooks)
     }, [])
 
+
+    async function fetchBooks(genre, setFunction){
+        try {
+            const response = await fetch (
+                `https://api.bigbookapi.com/search-books?query=${genre}&api-key=${API_KEY}`
+            )
+
+            const data = await response.json()
+            const filteredBooks = (data.books || [])
+                .flat()
+                .filter(book => book.title && book.image)
+
+            setFunction(filteredBooks.slice(0,10))
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     function BookSection({title, books}){
         return (
             <View style={{marginBottom: 30}}>
@@ -47,22 +65,6 @@ export default function Home() {
         )
     }
 
-    async function fetchBooks(genre, setFunction){
-        try {
-            const response = await fetch (
-                `https://api.bigbookapi.com/search-books?query=${genre}&api-key=${API_KEY}`
-            )
-
-            const data = await response.json()
-            const filteredBooks = (data.books || [])
-                .flat()
-                .filter(book => book.title && book.image)
-
-            setFunction(filteredBooks.slice(0,10))
-        } catch (error) {
-            console.log(error)
-        }
-    }
     
 
     return (

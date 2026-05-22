@@ -6,6 +6,7 @@ import AddBook from './components/pages/AddBook'
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Colors from './styles/Colors'; 
 
 const Tab = createBottomTabNavigator();
 
@@ -42,8 +43,12 @@ export default function App() {
             )
           },
 
-          tabBarActiveTintColor: "#254F50",
-          tabBarInactiveTintColor: "gray"
+          tabBarActiveTintColor: Colors.lightGreen,
+          tabBarInactiveTintColor: Colors.lightGreen,
+
+          tabBarStyle: {
+          backgroundColor: Colors.solidGreen
+        },
         })}
       >
 
