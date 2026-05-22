@@ -73,7 +73,7 @@ export default StyleSheet.create({
 
     logoutButton: {
         width: "100%",
-        backgroundColor: colors.primaryBlue,
+        backgroundColor: colors.solidGreen,
         paddingVertical: 18,
         borderRadius: 20,
         alignItems: "center",

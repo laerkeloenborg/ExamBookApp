@@ -40,6 +40,7 @@ export default function Login({onLogin}){
         androidClientId: "910602000048-ejrer6kp6jgaafd10nktu6gq9tmi3lsj.apps.googleusercontent.com",
         scopes: ["profile","email"],
         redirectUri: AuthSession.makeRedirectUri({
+            useProxy: true,
             native: "com.googleusercontent.apps.910602000048-ejrer6kp6jgaafd10nktu6gq9tmi3lsj:/oauth2redirect/google"
         })
     })

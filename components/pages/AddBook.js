@@ -4,6 +4,8 @@ import { collection, addDoc } from 'firebase/firestore';
 import { database } from '../../firebase.js';
 import { takePhoto, pickImageFromGallery } from '../Camera.js'
 import styles from '../../styles/AddBookStyling.js'
+import { getAuth } from "firebase/auth";
+import { SaveBook } from "../Books.js";
 
 export default function AddBook() {
 
@@ -70,6 +72,14 @@ export default function AddBook() {
     // SAVE BOOK
     async function saveBook() {
 
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (!user) {
+            alert("You have to be logged in to save a book")
+            return
+        }
+
+
         const newBook = {
             title,
             description,
@@ -82,20 +92,7 @@ export default function AddBook() {
 
         try {
 
-            await addDoc(collection(database, "books"), newBook);
-
-            console.log("Book saved!");
-
-            setTitle("");
-            setDescription("");
-            setAuthor("");
-            setStartDate("");
-            setEndDate("");
-            setImage("");
-
-            setSearch("");
-            setBooks([]);
-            setManualMode(false);
+            await SaveBook(newBook, user.uid)
 
         } catch (error) {
 
