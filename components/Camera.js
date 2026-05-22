@@ -15,8 +15,9 @@ export async function takePhoto(setImage) {
     });
 
     if (!result.canceled) {
-        setImage(result.assets[0].uri);
+        return result.assets[0].uri
     }
+    return null
 }
 
 export async function pickImageFromGallery(setImage) {
@@ -27,6 +28,7 @@ export async function pickImageFromGallery(setImage) {
     });
 
     if (!result.canceled) {
-        setImage(result.assets[0].uri);
+        return result.assets[0].uri
     }
+    return null
 }
