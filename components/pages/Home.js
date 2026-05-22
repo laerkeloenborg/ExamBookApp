@@ -1,12 +1,15 @@
 import { LinearGradient } from "expo-linear-gradient"
-import { Text, FlatList, View, Image } from "react-native"
+import { Text, FlatList, View, Image, Pressable, Modal, ScrollView } from "react-native"
 import colors from '../../styles/Colors.js'
 import styles from '../../styles/HomeStyling.js'
 import { useEffect, useState } from "react"
+import { ReadBook } from "../Books.js"
 
 export default function Home() {
     const [fantasyBooks, setFantasyBooks] = useState([])
     const [romanceBooks, setRomanceBooks] = useState([])
+    const [selectedBook, setSelectedBook] = useState(null)
+    const [modalVisible, setModalVisible] = useState(false)
     const API_KEY = "2563cf30fc764102b3862e2cfec6e705"
 
     useEffect(() => {
@@ -23,9 +26,9 @@ export default function Home() {
                 data = {books}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(item, index) => item.id?.toString() || index.toString()}
+                keyExtractor={(item, index) => item.id.toString() || index.toString()}
                 renderItem={({item}) => (
-                    <View style={{marginRight: 15}}>
+                    <Pressable style={{marginRight: 15}} onPress={() => ReadBook(item,setSelectedBook,setModalVisible)}>
                         {item.image ? (
                             <Image 
                                 source={{uri: item.image}}
@@ -37,7 +40,7 @@ export default function Home() {
                                 />
                         ) : null}
 
-                    </View>
+                    </Pressable>
                 )}
                 />
             </View>
@@ -61,6 +64,7 @@ export default function Home() {
         }
     }
     
+
     return (
         <LinearGradient  
             colors={colors.gradient}
@@ -71,6 +75,34 @@ export default function Home() {
             <Text style={styles.title}>Book recommendations</Text>
             <BookSection title="Fantasy" books={fantasyBooks}/>
             <BookSection title="Romance" books={romanceBooks}/>
+
+            <Modal visible={modalVisible}>
+                {selectedBook && (
+                    <ScrollView contentContainerStyle={styles.scroll}>
+                        <Image
+                            source={{ uri: selectedBook.image }}
+                            style={{
+                            width: 200,
+                            height: 300,
+                            borderRadius: 15,
+                            marginBottom: 20
+                            }}
+                        />
+
+                    <Text style={styles.title}>{selectedBook.title}</Text>
+                    <Text style={styles.bookInfo}>{selectedBook.author}</Text>
+                    <Text style={styles.bookInfo}>⭐ {selectedBook.rating}</Text>
+                    <Text style={styles.bookInfo}>{selectedBook.description}</Text>
+
+                    <Pressable
+                        onPress={() => setModalVisible(false)}
+                        style={styles.closeBtn}>
+                        <Text style={styles.closeBtnText}>Close</Text>
+                    </Pressable>
+
+                    </ScrollView>
+                )}
+            </Modal>
         </LinearGradient>
     )
 }

@@ -14,5 +14,24 @@ export default StyleSheet.create({
         color: colors.darkText,
         textAlign: "center",
         marginBottom: 100,
+    },
+    bookInfo: {
+        marginTop: 10,
+        fontSize: 18
+    },
+    closeBtn:{
+        marginTop: 30,
+        backgroundColor: colors.bioGreen,
+        paddingVertical: 15,
+        paddingHorizontal: 40,
+        borderRadius: 15
+    },
+    closeBtnText:{
+        color: "white",
+        fontWeight: "bold"
+    },
+    scroll:{
+        alignItems: "center",
+        padding: 20
     }
 })
