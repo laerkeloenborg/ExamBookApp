@@ -1,3 +1,37 @@
+export async function ReadBook(book, setSelectedBook, setModalVisible){
+    const API_KEY = "2563cf30fc764102b3862e2cfec6e705"
+
+    const response = await fetch(
+        `https://api.bigbookapi.com/${book.id}?api-key=${API_KEY}`
+    )
+
+    const data = await response.json()
+
+    const formattedBook = {
+
+        id: data.id || "Unknown id",
+
+        title: data.title || "Unknown title",
+
+        author: data.authors
+            ? data.authors.map(a => a.name).join(", ")
+            : "Unknown author",
+
+        image: data.image ||
+
+            "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
+
+        rating: data.rating?.average || "No rating",
+
+        description:
+            data.description ||
+            "No description available"
+
+    }
+
+    setSelectedBook(formattedBook)
+    setModalVisible(true)
+}
 import { database } from '../firebase.js'
 import { collection, addDoc, deleteDoc, doc, updateDoc, getDocs, getDoc, query, where } from 'firebase/firestore'
 
@@ -30,29 +64,6 @@ export async function SaveBook(BookData, uid) {
         console.error("Error saving book:", error)
         throw error
     }
-}
-
-export async function ReadBook(id) {
-    try{ 
-        const bookRef = doc(database, 'books', id)
-        const bookSnap = await getDoc(bookRef)
-
-
-        if (bookSnap.exists()) {
-            return { id: bookSnap.id, ...bookSnap.data() }
-        } else {
-            console.log("No book found with ID:", id)
-            return null;
-        }
-    }  catch (error) {
-        console.error("Error reading book:", error)
-        throw error
-    }
-}
-
-
-export async function ReadBooks() {
-  
 }
 
 
