@@ -109,7 +109,7 @@ export default function AddBook() {
                 (image.startsWith("file://") || image.startsWith("content://"))
                 ) {
 
-                    const downloadURL = await uploadImage(image, savedBookId)
+                    const downloadURL = await uploadImage(image,  `books/${savedBookId}.jpg`)
                     await updateDoc(
                         doc(database, "books", savedBookId),
                         {image: downloadURL}

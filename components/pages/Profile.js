@@ -1,7 +1,7 @@
 import { View, Text, Image, Pressable, Modal, Alert, ScrollView, FlatList, TextInput, TouchableOpacity } from "react-native"
 import { useState, useEffect } from "react"
 import { signOut, getAuth, deleteUser, updateProfile } from "firebase/auth"
-import { takePhoto, pickImageFromGallery } from "../Camera.js"
+import { takePhoto, pickImageFromGallery, uploadImage } from "../Camera.js"
 import styles from "../../styles/ProfileStyling.js"
 import colors from "../../styles/Colors.js"
 import { LinearGradient } from "expo-linear-gradient"
@@ -62,7 +62,10 @@ export default function Profile({ onLogout }) {
                     setWantsToRead(wants);
                     setDoneReading(done);
                     setCurrentlyReading(current);
-                });
+                }, (error) => {
+                     if (error.code !== "permission-denied") {
+                    console.log(error);
+                }});
             } else {
                  // CLEAR DATA ON LOGOUT
                 setBooks([]);
@@ -128,12 +131,22 @@ export default function Profile({ onLogout }) {
         try {
             const user = getAuth().currentUser
 
-            if (user) {
-                await updateProfile(user, {
-                    photoURL: imageUri
-                })
-                setImage(imageUri)
-            }
+            if(!user) return 
+
+            const downloadURL = await uploadImage(
+                imageUri,
+                 `profile/${user.uid}.jpg`
+            )
+
+            await updateProfile(user, {
+                photoURL: downloadURL
+            })
+
+            await user.reload()
+           
+            setImage(downloadURL)
+            console.log("Profile image saved")
+            
         } catch (error) {
             console.log("Image save error: ", error)
         }

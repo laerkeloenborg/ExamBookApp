@@ -35,10 +35,10 @@ export async function pickImageFromGallery(setImage) {
     return null
 }
 
-export async function uploadImage(uri, bookId){
+export async function uploadImage(uri, path){
     const res = await fetch(uri)
     const blob = await res.blob()
-    const storageRef = ref(storage, `books/${bookId}.jpg`)
+    const storageRef = ref(storage, path)
     const snap = await uploadBytes(storageRef,blob)
     const downloadURL = await getDownloadURL(snap.ref)
     return downloadURL 
