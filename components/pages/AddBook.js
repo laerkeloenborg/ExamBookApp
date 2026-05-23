@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity, Image } from "react-native";
-import { collection, addDoc } from 'firebase/firestore';
-import { database } from '../../firebase.js';
-import { takePhoto, pickImageFromGallery } from '../Camera.js'
+import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView, FlatList, TouchableOpacity, Image, Pressable } from "react-native";
+import { doc, updateDoc} from 'firebase/firestore';
+import { database } from "../../firebase.js";
+import { takePhoto, pickImageFromGallery, uploadImage } from '../Camera.js'
 import styles from '../../styles/AddBookStyling.js'
 import { getAuth } from "firebase/auth";
 import { SaveBook } from "../Books.js";
@@ -14,6 +14,7 @@ export default function AddBook() {
     // SEARCH STATES
     const [search, setSearch] = useState("");
     const [books, setBooks] = useState([]);
+    const [noResults, setNoResults] = useState(false)
 
     // MANUAL MODE
     const [manualMode, setManualMode] = useState(false);
@@ -21,6 +22,7 @@ export default function AddBook() {
     // BOOK FORM STATES
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const [pages, setPages] = useState("")
     const [author, setAuthor] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -33,13 +35,24 @@ export default function AddBook() {
     // SEARCH BOOKS
     async function searchBooks() {
         try {
+            setNoResults(false)
             const response = await fetch(
                 `https://api.bigbookapi.com/search-books?query=${search}&api-key=${API_KEY}`
             );
 
             const data = await response.json();
 
-            setBooks(data.books?.flat() || []);
+            const results = data.books?.flat() || []
+            const matchingBooks = results.filter(book => 
+                book.title?.toLowerCase().includes(search.toLowerCase())
+            )
+            setBooks(matchingBooks);
+
+            if (matchingBooks.length === 0){
+                setNoResults(true)
+            } else {
+                setNoResults(false)
+            }
 
         } catch (error) {
             console.log(error);
@@ -47,28 +60,38 @@ export default function AddBook() {
     }
 
     // SELECT BOOK
-    function selectBook(book) {
+    async function selectBook(book) {
 
-        console.log(book);
+        try {
+            const response = await fetch (
+                 `https://api.bigbookapi.com/${book.id}?api-key=${API_KEY}`
+            )
 
-        setTitle(book.title || "");
+            const data = await response.json()
 
-        setAuthor(
-            book.authors
-                ? book.authors.map(a => a.name).join(", ")
+            setTitle(data.title || "")
+            setAuthor(data.authors ?
+                book.authors.map(a => a.name).join(", ")
                 : ""
-        );
+            )
+            setDescription(data.description || "no description")
+            setPages(data.number_of_pages || "")
+            setImage(data.image || "")
+            setManualMode(true)
+        } catch(error){
+            console.log(error)
+        }
+    }
 
-        setDescription(
-            book.description ||
-            book.synopsis ||
-            book.overview ||
-            "No description available"
-        );
-
-        setImage(book.image || "");
-
-        setManualMode(true);
+    // RESET BOOK FORM
+    function resetBookForm(){
+        setTitle("")
+        setDescription("")
+        setPages("")
+        setAuthor("")
+        setStartDate("")
+        setEndDate("")
+        setImage("")
     }
 
     // SAVE BOOK
@@ -81,21 +104,41 @@ export default function AddBook() {
             return
         }
 
-
         const newBook = {
             title,
             description,
             author,
+            pages: Number(pages),
             startDate,
             endDate,
-            image,
+            image: image,
             status: "wantsToRead",
             createdAt: new Date()
         };
 
         try {
 
-            await SaveBook(newBook, user.uid)
+            const savedBookId = await SaveBook(newBook, user.uid)
+
+            if (
+                image &&
+                (image.startsWith("file://") || image.startsWith("content://"))
+                ) {
+
+                    const downloadURL = await uploadImage(image,  `books/${savedBookId}.jpg`)
+                    await updateDoc(
+                        doc(database, "books", savedBookId),
+                        {image: downloadURL}
+                    )
+                }
+            
+            setSearch("")
+            setBooks([])
+
+            alert("Book saved successfully!")
+        
+            resetBookForm()
+            setManualMode(false)
 
         } catch (error) {
 
@@ -114,6 +157,11 @@ export default function AddBook() {
     
 
     return (
+
+         <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
         <LinearGradient
             colors={colors.gradient}
             start={{ x: 0, y: 0 }}
@@ -134,10 +182,18 @@ export default function AddBook() {
                             style={styles.input}
                         />
 
-                        <Button style={styles.button}
-                                title="Search" 
-                                onPress={searchBooks} />
+                        <Pressable style={styles.button} onPress={searchBooks}>
+                            <Text style={styles.buttonText}>Search</Text>
+                        </Pressable>
+                    
 
+
+                        {noResults && (
+                            <View style={{marginTop: 30, alignItems: "center"}}>
+                                <Text style={styles.resultInfo}>We couldn't find what you were looking for.{"\n"}Add it manually instead.</Text>
+                            </View>
+                        )}
+                        
                         <FlatList
                             data={books}
                             keyExtractor={(item, index) =>
@@ -147,6 +203,9 @@ export default function AddBook() {
                                 index.toString()
                             }
                             style={styles.list}
+
+                            contentContainerStyle={{paddingBottom:200}}
+                            keyboardShouldPersistTaps="handled"
                             renderItem={({ item }) => (
 
                                 <TouchableOpacity
@@ -173,18 +232,20 @@ export default function AddBook() {
 
                                 </TouchableOpacity>
                             )}
-                        />
 
-                        <Button style={styles.button}
-                            title="Add book manually"
-                            onPress={() => setManualMode(true)}
+                              ListFooterComponent={
+                                <View style={{ marginTop: 20, marginBottom: 100 }}>
+                                    <Pressable style={styles.button} onPress={() => setManualMode(true)}>
+                                        <Text style={styles.buttonText}>Add book manually</Text>
+                                    </Pressable>
+                                </View>
+                                }
                         />
-
                     </>
 
                 ) : (
 
-                    <>
+                    <ScrollView contentContainerStyle={{paddingBottom: 120}} showsVerticalScrollIndicator={false}>
                         <Text style={styles.header}>Add a new book</Text>
 
                         {image ? (
@@ -193,18 +254,20 @@ export default function AddBook() {
                                 style={styles.bookImage}
                             />
                         ) : null}
-                        <Button style={styles.button}
-                                title="Take photo" 
-                                onPress={async () => {
-                                    const imageUri = await takePhoto()
-                                    if(imageUri) await saveBookImage(imageUri)}} 
-                        />
-                        <Button style={styles.button}
-                                    title="Pick photo from gallery" 
-                                    onPress={async () => {
-                                    const imageUri = await pickImageFromGallery()
-                                    if(imageUri) await saveBookImage(imageUri)}} 
-                        />
+                        <Pressable style={styles.button} onPress={async () => {
+                            const imageUri = await takePhoto()
+                            if(imageUri) await saveBookImage(imageUri)
+                        }}>
+                            <Text style={styles.buttonText}>Take photo</Text>
+                        </Pressable>
+                       
+                       <Pressable style={styles.button} onPress={async () => {
+                        const imageUri = await pickImageFromGallery()
+                        if(imageUri) await saveBookImage(imageUri)
+                       }}>
+                        <Text style={styles.buttonText}>Pick photo from gallery</Text>
+                       </Pressable>
+                        
                         <TextInput
                             placeholder="Book title"
                             value={title}
@@ -216,13 +279,21 @@ export default function AddBook() {
                             placeholder="Book description"
                             value={description}
                             onChangeText={setDescription}
-                            style={styles.input}
+                            style={[styles.input, styles.descriptionInput]}
+                            multiline={true}
                         />
 
                         <TextInput
                             placeholder="Author"
                             value={author}
                             onChangeText={setAuthor}
+                            style={styles.input}
+                        />
+
+                        <TextInput 
+                            placeholder="Number of pages"
+                            value={pages}
+                            onChangeText={setPages}
                             style={styles.input}
                         />
 
@@ -240,22 +311,22 @@ export default function AddBook() {
                             style={styles.input}
                         />
 
-                        <Button style={styles.button} 
-                                title="Save book" onPress={saveBook} />
-
-                        <View style={{ marginTop: 10 }}>
-                            <Button style={styles.button}
-                                    title="Back to search"
-                                    onPress={() => setManualMode(false)}
-                            />
-                        </View>
-
-
-                    </>
+                       <Pressable style={styles.button} onPress={saveBook}>
+                            <Text style={styles.buttonText}>Save book</Text>
+                       </Pressable>
+                       
+                       <Pressable style={styles.button} onPress={() => {resetBookForm()
+                            setManualMode(false)
+                       }}>
+                            <Text style={styles.buttonText}>Back to search</Text>
+                       </Pressable>
+                       
+                    </ScrollView>
                 )}
 
             </View>
         </LinearGradient>
+        </KeyboardAvoidingView>
     );
 }
 

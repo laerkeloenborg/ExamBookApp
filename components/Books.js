@@ -1,3 +1,6 @@
+import { database } from '../firebase.js'
+import { collection, addDoc, deleteDoc, doc, updateDoc, getDocs, getDoc, query, where } from 'firebase/firestore'
+
 export async function ReadBook(book, setSelectedBook, setModalVisible){
     const API_KEY = "2563cf30fc764102b3862e2cfec6e705"
 
@@ -17,6 +20,8 @@ export async function ReadBook(book, setSelectedBook, setModalVisible){
             ? data.authors.map(a => a.name).join(", ")
             : "Unknown author",
 
+        pages: data.number_of_pages || "",
+        
         image: data.image ||
 
             "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
@@ -32,9 +37,6 @@ export async function ReadBook(book, setSelectedBook, setModalVisible){
     setSelectedBook(formattedBook)
     setModalVisible(true)
 }
-import { database } from '../firebase.js'
-import { collection, addDoc, deleteDoc, doc, updateDoc, getDocs, getDoc, query, where } from 'firebase/firestore'
-
 
 export async function ReadUserBooks(uid) {
     try {

@@ -24,6 +24,11 @@ container: {
         backgroundColor: "rgba(255,255,255,0.7)"
     },
 
+    descriptionInput: {
+        height: 140,
+        textAlignVertical: "top",
+    },
+
     list: {
         marginVertical: 20,
     },
@@ -56,7 +61,27 @@ container: {
     },
 
     button: {
-        backgroundColor: colors.solidGreen
+        backgroundColor: colors.solidGreen,
+        paddingVertical: 14,
+        borderRadius: 12,
+        alignItems: "center",
+        marginTop: 10,
+    },
+    
+    buttonPressed: {
+    opacity: 0.7,
+    },
+
+     buttonText: {
+            color: colors.white,
+            fontSize: 16,
+            fontWeight: "bold"
+        },
+
+    resultInfo: {
+        fontSize: 16,
+        textAlign: "center",
+        marginBottom: 15
     }
 
 
