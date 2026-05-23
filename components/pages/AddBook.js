@@ -238,7 +238,8 @@ export default function AddBook() {
                             placeholder="Book description"
                             value={description}
                             onChangeText={setDescription}
-                            style={styles.input}
+                            style={[styles.input, styles.descriptionInput]}
+                            multiline={true}
                         />
 
                         <TextInput
