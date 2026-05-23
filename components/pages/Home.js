@@ -92,8 +92,9 @@ export default function Home() {
                         />
 
                     <Text style={styles.title}>{selectedBook.title}</Text>
-                    <Text style={styles.bookInfo}>{selectedBook.author}</Text>
-                    <Text style={styles.bookInfo}>⭐ {selectedBook.rating}</Text>
+                    <Text style={styles.bookInfo}>Author: {selectedBook.author}</Text>
+                    <Text style={styles.bookInfo}>Number of pages: {selectedBook.pages}</Text>
+                    <Text style={styles.bookInfo}>⭐ {(selectedBook.rating*10).toFixed(1)}</Text>
                     <Text style={styles.bookInfo}>{selectedBook.description}</Text>
 
                     <Pressable
