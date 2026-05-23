@@ -36,7 +36,6 @@ export default function Profile({ onLogout }) {
                 setMail(user.email || "")
                 setImage(user.photoURL || null)
 
-                // 👇 REALTIME LISTENER - opdaterer automatisk
                 const q = query(
                     collection(database, "books"),
                     where("userId", "==", user.uid)

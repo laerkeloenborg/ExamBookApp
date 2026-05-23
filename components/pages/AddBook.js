@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { View, Text, TextInput, Button, ScrollView, FlatList, TouchableOpacity, Image } from "react-native";
-import { collection, addDoc } from 'firebase/firestore';
-import { database } from '../../firebase.js';
-import { takePhoto, pickImageFromGallery } from '../Camera.js'
+import { doc, updateDoc} from 'firebase/firestore';
+import { database } from "../../firebase.js";
+import { takePhoto, pickImageFromGallery, uploadImage } from '../Camera.js'
 import styles from '../../styles/AddBookStyling.js'
 import { getAuth } from "firebase/auth";
 import { SaveBook } from "../Books.js";
@@ -95,14 +95,27 @@ export default function AddBook() {
             author,
             startDate,
             endDate,
-            image,
+            image: image,
             status: "wantsToRead",
             createdAt: new Date()
         };
 
         try {
 
-            await SaveBook(newBook, user.uid)
+            const savedBookId = await SaveBook(newBook, user.uid)
+
+            if (
+                image &&
+                (image.startsWith("file://") || image.startsWith("content://"))
+                ) {
+
+                    const downloadURL = await uploadImage(image, savedBookId)
+                    await updateDoc(
+                        doc(database, "books", savedBookId),
+                        {image: downloadURL}
+                    )
+                }
+            
             setSearch("")
             setBooks([])
 
