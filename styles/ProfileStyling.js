@@ -28,7 +28,7 @@ export default StyleSheet.create({
         height: 75,
         borderRadius: 40,
         borderWidth: 3,
-        borderColor: colors.white
+        borderColor: colors.solidGreen
     },  
     card: {
         backgroundColor: "rgba(255,255,255,0.25)",
@@ -63,12 +63,12 @@ export default StyleSheet.create({
 
     modalButton: {
         width: "100%",
-        paddingVertical: 16,
         borderRadius: 18,
         alignItems: "center",
         justifyContent: "center",
         marginTop: 15,
-        backgroundColor: colors.bioGreen
+        backgroundColor: colors.solidGreen,
+        padding: 5,
     },
 
     logoutButton: {
@@ -109,10 +109,12 @@ export default StyleSheet.create({
 
     modalContent: {
         width: "100%",
-        backgroundColor: "rgba(255,255,255,0.92)",
+        backgroundColor: "rgba(255, 255, 255, 0.44)",
         borderRadius: 30,
         padding: 30,
-        alignItems: "center"
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "rgba(255,255,255,0.8)",
     },
 
     modalTitle: {
@@ -127,8 +129,127 @@ export default StyleSheet.create({
         height: 150,
         borderRadius: 75,
         borderWidth: 4,
-        borderColor: colors.white,
+        borderColor: colors.solidGreen,
         marginBottom: 25
-    }
+    },
+
+    sectionTitle: {
+        fontSize: 24,
+        fontWeight: "bold",
+        color: colors.solidGreen,
+        marginBottom: 15,
+        marginLeft: 10
+    },
+
+    userBookCard: {
+        width: 100,        
+        backgroundColor: "#ffffff6e",
+        borderRadius: 10,
+        padding: 0,
+        marginHorizontal: 15, 
+},
+    userBookImage: {
+        width: "100%",
+        height: 150,
+        borderRadius: 10,
+        marginBottom: 0,
+    },
+
+    userBookTitle: {
+        color: colors.solidGreen,
+        fontSize: 16,
+        fontWeight: "bold"
+    },
+
+    userBookAuthor: {
+        color: colors.solidGreen,
+        marginBottom: 5
+    },
+
+    bookDate: {
+        color: colors.solidGreen,
+        fontSize: 12
+    },
+
+    bookButtons: {
+        marginTop: 10,
+        gap: 10,
+        backgroundColor: colors.solidGreen
+    },
+
+    statusButton: {
+        backgroundColor: colors.solidGreen,
+        padding: 5,
+        borderRadius: 10,
+        alignItems: "center"
+    },
+
+    bookItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        marginVertical: 8,
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        borderRadius: 10,
+        width: '100%',
+    },
+
+    searchBookImage: {
+        width: 60,    
+        height: 80,   
+        borderRadius: 5,
+        marginRight: 10,
+    },
+
+    bookTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: colors.solidGreen,
+        flex: 1,
+    },
+
+    bookModalContent: {
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        margin: 20,
+        borderRadius: 30,
+        padding: 20,
+        alignItems: "center",
+        borderWidth: 3,
+        borderColor: "rgba(255,255,255,1)",
+    },
+
+    modalBookImage: {
+        width: 200,
+        height: 300,
+        borderRadius: 15,
+        marginBottom: 20
+    },
+
+    modalBookTitle: {
+        fontSize: 24,
+        fontWeight: "bold",
+        color: colors.solidGreen,
+        textAlign: "center",
+        marginBottom: 10
+    },
+
+    modalBookAuthor: {
+        fontSize: 18,
+        color: colors.solidGreen,
+        marginBottom: 15
+    },
+
+    modalBookDescription: {
+        color: colors.solidGreen,
+        marginBottom: 20,
+        textAlign: "center"
+    },
+
+    booksContainer: {
+        paddingHorizontal: 10, 
+        paddingTop: 10,
+        paddingBottom: 20,
+    },
+
 
 })

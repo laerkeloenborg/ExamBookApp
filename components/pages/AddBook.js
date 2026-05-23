@@ -6,6 +6,8 @@ import { takePhoto, pickImageFromGallery } from '../Camera.js'
 import styles from '../../styles/AddBookStyling.js'
 import { getAuth } from "firebase/auth";
 import { SaveBook } from "../Books.js";
+import { LinearGradient } from "expo-linear-gradient";
+import colors from "../../styles/Colors.js"
 
 export default function AddBook() {
 
@@ -71,7 +73,7 @@ export default function AddBook() {
 
     // SAVE BOOK
     async function saveBook() {
-
+    
         const auth = getAuth();
         const user = auth.currentUser;
         if (!user) {
@@ -87,6 +89,7 @@ export default function AddBook() {
             startDate,
             endDate,
             image,
+            status: "wantsToRead",
             createdAt: new Date()
         };
 
@@ -101,131 +104,158 @@ export default function AddBook() {
         }
     }
 
+      async function saveBookImage(imageUri) {
+            try {
+                setImage(imageUri)
+            } catch (error) {
+                console.error("Error saving book image:", error)
+            }
+        }
+    
+
     return (
+        <LinearGradient
+            colors={colors.gradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.container}>
 
-        <View style={styles.container}>
+            <View>
 
-            {!manualMode ? (
+                {!manualMode ? (
 
-                <>
-                    <Text style={styles.header}>Search for a book</Text>
+                    <>
+                        <Text style={styles.header}>Search for a book</Text>
 
-                    <TextInput
-                        placeholder="Search book title..."
-                        value={search}
-                        onChangeText={setSearch}
-                        style={styles.input}
-                    />
-
-                    <Button title="Search" onPress={searchBooks} />
-
-                    <FlatList
-                        data={books}
-                        keyExtractor={(item, index) =>
-                            item?.id?.toString() ||
-                            item?.isbn13 ||
-                            item?.isbn ||
-                            index.toString()
-                        }
-                        style={styles.list}
-                        renderItem={({ item }) => (
-
-                            <TouchableOpacity
-                                style={styles.bookItem}
-                                onPress={() => selectBook(item)}
-                            >
-
-                                {item.image ? (
-                                    <Image
-                                        source={{ uri: item.image }}
-                                        style={styles.searchBookImage}
-                                    />
-                                ) : null}
-
-                                <Text style={styles.bookTitle}>
-                                    {item.title}
-                                </Text>
-
-                                <Text>
-                                    {item.authors
-                                        ? item.authors.map(a => a.name).join(", ")
-                                        : "Unknown author"}
-                                </Text>
-
-                            </TouchableOpacity>
-                        )}
-                    />
-
-                    <Button
-                        title="Add book manually"
-                        onPress={() => setManualMode(true)}
-                    />
-
-                </>
-
-            ) : (
-
-                <>
-                    <Text style={styles.header}>Add a new book</Text>
-
-                    {image ? (
-                        <Image
-                            source={{ uri: image }}
-                            style={styles.bookImage}
+                        <TextInput
+                            placeholder="Search book title..."
+                            value={search}
+                            onChangeText={setSearch}
+                            style={styles.input}
                         />
-                    ) : null}
-                    <Button title="Take photo" onPress={ () => takePhoto(setImage)} />
-                    <Button title="Pick photo from gallery" onPress={ () => pickImageFromGallery(setImage)} />
 
-                    <TextInput
-                        placeholder="Book title"
-                        value={title}
-                        onChangeText={setTitle}
-                        style={styles.input}
-                    />
+                        <Button style={styles.button}
+                                title="Search" 
+                                onPress={searchBooks} />
 
-                    <TextInput
-                        placeholder="Book description"
-                        value={description}
-                        onChangeText={setDescription}
-                        style={styles.input}
-                    />
+                        <FlatList
+                            data={books}
+                            keyExtractor={(item, index) =>
+                                item?.id?.toString() ||
+                                item?.isbn13 ||
+                                item?.isbn ||
+                                index.toString()
+                            }
+                            style={styles.list}
+                            renderItem={({ item }) => (
 
-                    <TextInput
-                        placeholder="Author"
-                        value={author}
-                        onChangeText={setAuthor}
-                        style={styles.input}
-                    />
+                                <TouchableOpacity
+                                    style={styles.bookItem}
+                                    onPress={() => selectBook(item)}
+                                >
 
-                    <TextInput
-                        placeholder="Start date"
-                        value={startDate}
-                        onChangeText={setStartDate}
-                        style={styles.input}
-                    />
+                                    {item.image ? (
+                                        <Image
+                                            source={{ uri: item.image }}
+                                            style={styles.searchBookImage}
+                                        />
+                                    ) : null}
 
-                    <TextInput
-                        placeholder="End date"
-                        value={endDate}
-                        onChangeText={setEndDate}
-                        style={styles.input}
-                    />
+                                    <Text style={styles.bookTitle}>
+                                        {item.title}
+                                    </Text>
 
-                    <Button title="Save book" onPress={saveBook} />
+                                    <Text>
+                                        {item.authors
+                                            ? item.authors.map(a => a.name).join(", ")
+                                            : "Unknown author"}
+                                    </Text>
 
-                    <View style={{ marginTop: 10 }}>
-                        <Button
-                            title="Back to search"
-                            onPress={() => setManualMode(false)}
+                                </TouchableOpacity>
+                            )}
                         />
-                    </View>
+
+                        <Button style={styles.button}
+                            title="Add book manually"
+                            onPress={() => setManualMode(true)}
+                        />
+
+                    </>
+
+                ) : (
+
+                    <>
+                        <Text style={styles.header}>Add a new book</Text>
+
+                        {image ? (
+                            <Image
+                                source={{ uri: image }}
+                                style={styles.bookImage}
+                            />
+                        ) : null}
+                        <Button style={styles.button}
+                                title="Take photo" 
+                                onPress={async () => {
+                                    const imageUri = await takePhoto()
+                                    if(imageUri) await saveBookImage(imageUri)}} 
+                        />
+                        <Button style={styles.button}
+                                    title="Pick photo from gallery" 
+                                    onPress={async () => {
+                                    const imageUri = await pickImageFromGallery()
+                                    if(imageUri) await saveBookImage(imageUri)}} 
+                        />
+                        <TextInput
+                            placeholder="Book title"
+                            value={title}
+                            onChangeText={setTitle}
+                            style={styles.input}
+                        />
+
+                        <TextInput
+                            placeholder="Book description"
+                            value={description}
+                            onChangeText={setDescription}
+                            style={styles.input}
+                        />
+
+                        <TextInput
+                            placeholder="Author"
+                            value={author}
+                            onChangeText={setAuthor}
+                            style={styles.input}
+                        />
+
+                        <TextInput
+                            placeholder="Start date"
+                            value={startDate}
+                            onChangeText={setStartDate}
+                            style={styles.input}
+                        />
+
+                        <TextInput
+                            placeholder="End date"
+                            value={endDate}
+                            onChangeText={setEndDate}
+                            style={styles.input}
+                        />
+
+                        <Button style={styles.button} 
+                                title="Save book" onPress={saveBook} />
+
+                        <View style={{ marginTop: 10 }}>
+                            <Button style={styles.button}
+                                    title="Back to search"
+                                    onPress={() => setManualMode(false)}
+                            />
+                        </View>
 
 
-                </>
-            )}
+                    </>
+                )}
 
-        </View>
+            </View>
+        </LinearGradient>
     );
 }
 

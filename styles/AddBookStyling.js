@@ -21,6 +21,7 @@ container: {
         padding: 12,
         borderRadius: 8,
         marginBottom: 12,
+        backgroundColor: "rgba(255,255,255,0.7)"
     },
 
     list: {
@@ -53,6 +54,10 @@ container: {
         alignSelf: "center",
         marginBottom: 20,
     },
+
+    button: {
+        backgroundColor: colors.solidGreen
+    }
 
 
 })
