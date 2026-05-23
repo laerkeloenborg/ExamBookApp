@@ -40,7 +40,7 @@ export default function Profile({ onLogout }) {
   const [currentlyReading, setCurrentlyReading] = useState([]);
   const [favoriteCharacter, setFavoriteCharacter] = useState("");
   const [favoriteQuote, setFavoriteQuote] = useState("");
-  const [rating, setRating] = useState("");
+  const [rating, setRating] = useState(0);
   const [doneReadingModal, setDoneReadingModal] = useState(false);
 
   // ------------------------------------ USER STUFF --------------------------------------------
@@ -195,7 +195,7 @@ export default function Profile({ onLogout }) {
 
     setFavoriteCharacter(book.favoriteCharacter || "");
     setFavoriteQuote(book.favoriteQuote || "");
-    setRating(book.rating || "");
+    setRating(book.rating || 0);
 
     setDoneReadingModal(true);
   }
@@ -468,7 +468,7 @@ export default function Profile({ onLogout }) {
             </View>
           </View>
         </Modal>
-
+ {/* ---------------------------------------- Done reading review ----------------------------------------------- */}
         <Modal
           visible={doneReadingModal}
           animationType="slide"
@@ -493,13 +493,22 @@ export default function Profile({ onLogout }) {
                 multiline
               />
 
-              <TextInput
-                placeholder="Rating (0-10)"
-                value={rating}
-                onChangeText={setRating}
-                keyboardType="numeric"
-                style={styles.input}
-              />
+              <View style={styles.starContainer}>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
+                  <Pressable key={star} onPress={() => setRating(star)}>
+                    <Text
+                      style={{
+                        fontSize: 30,
+                        marginHorizontal: 2,
+                        color: star <= rating ? colors.markedStar : colors.defaultStar,
+                      }}
+                    >
+                      ★
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+              <Text style={styles.ratingText}>Rating: {rating}/10</Text>
 
               <Pressable
                 style={styles.statusButton}
@@ -530,6 +539,7 @@ export default function Profile({ onLogout }) {
           </View>
         </Modal>
 
+ {/* ---------------------------------------- Book sections ----------------------------------------------- */}
         <UserBookSection
           style={styles.currently}
           title="Currently Reading"

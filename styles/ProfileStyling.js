@@ -294,5 +294,11 @@ export default StyleSheet.create({
     marginTop: 12,
 
     fontSize: 16,
-  }
+  },
+  starContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 20,
+    marginBottom: 20,
+},
 });

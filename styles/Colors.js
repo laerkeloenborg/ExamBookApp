@@ -15,6 +15,10 @@ export default {
     bioGreen: "#52b788",
     gradient: ["#00b4d8", "#80ed99", "#d9f99d"],
 
-    solidGreen: "#046159"
+    solidGreen: "#046159",
+
+    defaultStar: "#d3d3d3",
+    markedStar: "#FFD700" 
+
 }
 
