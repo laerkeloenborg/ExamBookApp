@@ -185,19 +185,20 @@ export default function Profile({ onLogout }) {
   // --------------------------------------------------  USERS BOOKS ----------------------------------------------------
 
   const openBookDetails = (book) => {
-    setSelectedBook(book);
-    setBookModalVisible(true);
-    setEditMode(false);
+    setSelectedBook(book)
+    setBookModalVisible(true)
+    setEditMode(false)
   };
 
   function openDoneReadingModal(book) {
-    setSelectedBook(book);
+    setSelectedBook(book)
 
     setFavoriteCharacter(book.favoriteCharacter || "");
     setFavoriteQuote(book.favoriteQuote || "");
     setRating(book.rating || 0);
 
-    setDoneReadingModal(true);
+    setBookModalVisible(false)
+    setDoneReadingModal(true)
   }
 
   async function handleUpdateBook() {
@@ -210,7 +211,7 @@ export default function Profile({ onLogout }) {
         author: selectedBook.author,
         pages: selectedBook.pages,
         startDate: selectedBook.startDate,
-        endDate: selectedBook.endDate,
+        endDate: selectedBook.endDate || new Date().toLocaleDateString(),
         image: selectedBook.image,
       });
       /* await loadUserBooks(getAuth().currentUser.uid) */
@@ -468,7 +469,7 @@ export default function Profile({ onLogout }) {
             </View>
           </View>
         </Modal>
- {/* ---------------------------------------- Done reading review ----------------------------------------------- */}
+        {/* ---------------------------------------- Done reading review ----------------------------------------------- */}
         <Modal
           visible={doneReadingModal}
           animationType="slide"
@@ -500,7 +501,10 @@ export default function Profile({ onLogout }) {
                       style={{
                         fontSize: 30,
                         marginHorizontal: 2,
-                        color: star <= rating ? colors.markedStar : colors.defaultStar,
+                        color:
+                          star <= rating
+                            ? colors.markedStar
+                            : colors.defaultStar,
                       }}
                     >
                       ★
@@ -539,18 +543,15 @@ export default function Profile({ onLogout }) {
           </View>
         </Modal>
 
- {/* ---------------------------------------- Book sections ----------------------------------------------- */}
+        {/* ---------------------------------------- Book sections ----------------------------------------------- */}
         <UserBookSection
           style={styles.currently}
           title="Currently Reading"
           books={currentlyReading}
           onDelete={handleDeleteBook}
           onPressBook={openBookDetails}
-          onDoneReading={async (book) => {
-            await UpdateBook(book.id, {
-              status: "doneReading",
-              endDate: new Date().toLocaleDateString(),
-            });
+          onDoneReading={(book) => {
+            openDoneReadingModal(book);
           }}
         />
 
@@ -559,17 +560,8 @@ export default function Profile({ onLogout }) {
           books={wantsToRead}
           onDelete={handleDeleteBook}
           onPressBook={openBookDetails}
-          onDoneReading={async (book) => {
-            await UpdateBook(book.id, {
-              status: "doneReading",
-              endDate: new Date().toLocaleDateString(),
-            });
-
-            const user = getAuth().currentUser;
-
-            if (user) {
-              loadUserBooks(user.uid);
-            }
+          onDoneReading={(book) => {
+            openDoneReadingModal(book);
           }}
         />
         <UserBookSection
