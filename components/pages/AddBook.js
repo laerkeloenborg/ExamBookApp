@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, Button, ScrollView, FlatList, TouchableOpacity, Image, Pressable } from "react-native";
+import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView, FlatList, TouchableOpacity, Image, Pressable } from "react-native";
 import { doc, updateDoc} from 'firebase/firestore';
 import { database } from "../../firebase.js";
 import { takePhoto, pickImageFromGallery, uploadImage } from '../Camera.js'
@@ -157,6 +157,11 @@ export default function AddBook() {
     
 
     return (
+
+         <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
         <LinearGradient
             colors={colors.gradient}
             start={{ x: 0, y: 0 }}
@@ -321,6 +326,7 @@ export default function AddBook() {
 
             </View>
         </LinearGradient>
+        </KeyboardAvoidingView>
     );
 }
 
