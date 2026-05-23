@@ -173,9 +173,10 @@ export default function AddBook() {
                             style={styles.input}
                         />
 
-                        <Button style={styles.button}
-                                title="Search" 
-                                onPress={searchBooks} />
+                        <Pressable style={styles.button} onPress={search}>
+                            <Text style={styles.buttonText}>Search</Text>
+                        </Pressable>
+                    
 
 
                         {noResults && (
@@ -225,10 +226,9 @@ export default function AddBook() {
 
                               ListFooterComponent={
                                 <View style={{ marginTop: 20, marginBottom: 100 }}>
-                                    <Button
-                                    title="Add book manually"
-                                    onPress={() => setManualMode(true)}
-                                    />
+                                    <Pressable style={styles.button} onPress={() => setManualMode(true)}>
+                                        <Text style={styles.buttonText}>Add book manually</Text>
+                                    </Pressable>
                                 </View>
                                 }
                         />
@@ -245,18 +245,20 @@ export default function AddBook() {
                                 style={styles.bookImage}
                             />
                         ) : null}
-                        <Button style={styles.button}
-                                title="Take photo" 
-                                onPress={async () => {
-                                    const imageUri = await takePhoto()
-                                    if(imageUri) await saveBookImage(imageUri)}} 
-                        />
-                        <Button style={styles.button}
-                                    title="Pick photo from gallery" 
-                                    onPress={async () => {
-                                    const imageUri = await pickImageFromGallery()
-                                    if(imageUri) await saveBookImage(imageUri)}} 
-                        />
+                        <Pressable style={styles.button} onPress={async () => {
+                            const imageUri = await takePhoto()
+                            if(imageUri) await saveBookImage(imageUri)
+                        }}>
+                            <Text style={styles.buttonText}>Take photo</Text>
+                        </Pressable>
+                       
+                       <Pressable style={styles.button} onPress={async () => {
+                        const imageUri = await pickImageFromGallery()
+                        if(imageUri) await saveBookImage(imageUri)
+                       }}>
+                        <Text style={styles.buttonText}>Pick photo from gallery</Text>
+                       </Pressable>
+                        
                         <TextInput
                             placeholder="Book title"
                             value={title}
@@ -293,18 +295,16 @@ export default function AddBook() {
                             style={styles.input}
                         />
 
-                        <Button style={styles.button} 
-                                title="Save book" onPress={saveBook} />
-
-                        <View style={{ marginTop: 10 }}>
-                            <Button style={styles.button}
-                                    title="Back to search"
-                                    onPress={() => {resetBookForm() 
-                                        setManualMode(false)}}
-                            />
-                        </View>
-
-
+                       <Pressable style={styles.button} onPress={saveBook}>
+                            <Text style={styles.buttonText}>Save book</Text>
+                       </Pressable>
+                       
+                       <Pressable style={styles.button} onPress={() => {resetBookForm()
+                            setManualMode(false)
+                       }}>
+                            <Text style={styles.buttonText}>Back to search</Text>
+                       </Pressable>
+                       
                     </ScrollView>
                 )}
 
