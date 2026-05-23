@@ -29,8 +29,14 @@ export default function Profile({ onLogout }) {
 
 
     useEffect(() => {
-        const auth = getAuth();
+        const auth = getAuth()
+        let unsubscribeSnapshot = null
         const unsubscribeAuth = auth.onAuthStateChanged((user) => {
+            if (unsubscribeSnapshot) {
+            unsubscribeSnapshot();
+            unsubscribeSnapshot = null;
+            }
+            
             if (user) {
                 setName(user.displayName || "User")
                 setMail(user.email || "")
@@ -41,7 +47,7 @@ export default function Profile({ onLogout }) {
                     where("userId", "==", user.uid)
                 );
 
-                return onSnapshot(q, (snapshot) => {
+                unsubscribeSnapshot = onSnapshot(q,(snapshot) => {
                     const userBooks = snapshot.docs.map(doc => ({
                         id: doc.id,
                         ...doc.data()
@@ -49,7 +55,6 @@ export default function Profile({ onLogout }) {
 
                     setBooks(userBooks);
 
-                    // Filtrer bøgerne
                     const wants = userBooks.filter(book => book.status === "wantsToRead");
                     const done = userBooks.filter(book => book.status === "doneReading");
                     const current = userBooks.filter(book => book.status === "currentlyReading");
@@ -58,10 +63,23 @@ export default function Profile({ onLogout }) {
                     setDoneReading(done);
                     setCurrentlyReading(current);
                 });
+            } else {
+                 // CLEAR DATA ON LOGOUT
+                setBooks([]);
+                setWantsToRead([]);
+                setDoneReading([]);
+                setCurrentlyReading([]);
             }
         });
-        return () => unsubscribeAuth();
-    }, []);
+        return () => {
+            if (unsubscribeSnapshot) {
+            unsubscribeSnapshot();
+        }
+
+        unsubscribeAuth();
+    };
+
+}, []);
 
     /* useEffect(() => {
         const auth = getAuth();
