@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, ScrollView, Button, FlatList, TouchableOpacity, Image } from "react-native";
+import { View, Text, TextInput, Button, ScrollView, FlatList, TouchableOpacity, Image } from "react-native";
 import { collection, addDoc } from 'firebase/firestore';
 import { database } from '../../firebase.js';
 import { takePhoto, pickImageFromGallery } from '../Camera.js'
@@ -47,28 +47,26 @@ export default function AddBook() {
     }
 
     // SELECT BOOK
-    function selectBook(book) {
+    async function selectBook(book) {
 
-        console.log(book);
+        try {
+            const response = await fetch (
+                 `https://api.bigbookapi.com/${book.id}?api-key=${API_KEY}`
+            )
 
-        setTitle(book.title || "");
+            const data = await response.json()
 
-        setAuthor(
-            book.authors
-                ? book.authors.map(a => a.name).join(", ")
+            setTitle(data.title || "")
+            setAuthor(data.authors ?
+                book.authors.map(a => a.name).join(", ")
                 : ""
-        );
-
-        setDescription(
-            book.description ||
-            book.synopsis ||
-            book.overview ||
-            "No description available"
-        );
-
-        setImage(book.image || "");
-
-        setManualMode(true);
+            )
+            setDescription(data.description || "no description")
+            setImage(data.image || "")
+            setManualMode(true)
+        } catch(error){
+            console.log(error)
+        }
     }
 
     // RESET BOOK FORM
@@ -206,7 +204,7 @@ export default function AddBook() {
 
                 ) : (
 
-                    <>
+                    <ScrollView contentContainerStyle={{paddingBottom: 120}} showsVerticalScrollIndicator={false}>
                         <Text style={styles.header}>Add a new book</Text>
 
                         {image ? (
@@ -275,7 +273,7 @@ export default function AddBook() {
                         </View>
 
 
-                    </>
+                    </ScrollView>
                 )}
 
             </View>
