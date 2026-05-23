@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, Button, ScrollView, FlatList, TouchableOpacity, Image } from "react-native";
+import { View, Text, TextInput, Button, ScrollView, FlatList, TouchableOpacity, Image, Pressable } from "react-native";
 import { doc, updateDoc} from 'firebase/firestore';
 import { database } from "../../firebase.js";
 import { takePhoto, pickImageFromGallery, uploadImage } from '../Camera.js'
@@ -14,6 +14,7 @@ export default function AddBook() {
     // SEARCH STATES
     const [search, setSearch] = useState("");
     const [books, setBooks] = useState([]);
+    const [noResults, setNoResults] = useState(false)
 
     // MANUAL MODE
     const [manualMode, setManualMode] = useState(false);
@@ -33,13 +34,24 @@ export default function AddBook() {
     // SEARCH BOOKS
     async function searchBooks() {
         try {
+            setNoResults(false)
             const response = await fetch(
                 `https://api.bigbookapi.com/search-books?query=${search}&api-key=${API_KEY}`
             );
 
             const data = await response.json();
 
-            setBooks(data.books?.flat() || []);
+            const results = data.books?.flat() || []
+            const matchingBooks = results.filter(book => 
+                book.title?.toLowerCase().includes(search.toLowerCase())
+            )
+            setBooks(matchingBooks);
+
+            if (matchingBooks.length === 0){
+                setNoResults(true)
+            } else {
+                setNoResults(false)
+            }
 
         } catch (error) {
             console.log(error);
@@ -165,6 +177,13 @@ export default function AddBook() {
                                 title="Search" 
                                 onPress={searchBooks} />
 
+
+                        {noResults && (
+                            <View style={{marginTop: 30, alignItems: "center"}}>
+                                <Text style={styles.resultInfo}>We couldn't find what you were looking for.{"\n"}Add it manually instead.</Text>
+                            </View>
+                        )}
+                        
                         <FlatList
                             data={books}
                             keyExtractor={(item, index) =>

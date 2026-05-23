@@ -62,6 +62,12 @@ container: {
 
     button: {
         backgroundColor: colors.solidGreen
+    },
+
+    resultInfo: {
+        fontSize: 16,
+        textAlign: "center",
+        marginBottom: 15
     }
 
 
