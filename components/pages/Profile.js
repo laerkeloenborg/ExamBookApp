@@ -1,4 +1,4 @@
-import { View, Text, Image, Pressable, Modal, Alert, FlatList, TextInput, TouchableOpacity } from "react-native"
+import { View, Text, Image, Pressable, Modal, Alert, ScrollView, FlatList, TextInput, TouchableOpacity } from "react-native"
 import { useState, useEffect } from "react"
 import { signOut, getAuth, deleteUser, updateProfile } from "firebase/auth"
 import { takePhoto, pickImageFromGallery } from "../Camera.js"
@@ -191,6 +191,7 @@ export default function Profile({ onLogout }) {
 
 
     return (
+        <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <LinearGradient
             colors={colors.gradient}
             start={{ x: 0, y: 0 }}
@@ -434,5 +435,6 @@ export default function Profile({ onLogout }) {
                 <Text style={styles.buttonText}>Logout</Text>
             </Pressable>
         </LinearGradient>
+        </ScrollView>
     )
 } 

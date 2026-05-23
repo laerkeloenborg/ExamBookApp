@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity, Image } from "react-native";
+import { View, Text, TextInput, ScrollView, Button, FlatList, TouchableOpacity, Image } from "react-native";
 import { collection, addDoc } from 'firebase/firestore';
 import { database } from '../../firebase.js';
 import { takePhoto, pickImageFromGallery } from '../Camera.js'
@@ -71,6 +71,16 @@ export default function AddBook() {
         setManualMode(true);
     }
 
+    // RESET BOOK FORM
+    function resetBookForm(){
+        setTitle("")
+        setDescription("")
+        setAuthor("")
+        setStartDate("")
+        setEndDate("")
+        setImage("")
+    }
+
     // SAVE BOOK
     async function saveBook() {
     
@@ -80,7 +90,6 @@ export default function AddBook() {
             alert("You have to be logged in to save a book")
             return
         }
-
 
         const newBook = {
             title,
@@ -96,6 +105,13 @@ export default function AddBook() {
         try {
 
             await SaveBook(newBook, user.uid)
+            setSearch("")
+            setBooks([])
+
+            alert("Book saved successfully!")
+        
+            resetBookForm()
+            setManualMode(false)
 
         } catch (error) {
 
@@ -147,6 +163,9 @@ export default function AddBook() {
                                 index.toString()
                             }
                             style={styles.list}
+
+                            contentContainerStyle={{paddingBottom:200}}
+                            keyboardShouldPersistTaps="handled"
                             renderItem={({ item }) => (
 
                                 <TouchableOpacity
@@ -173,13 +192,16 @@ export default function AddBook() {
 
                                 </TouchableOpacity>
                             )}
-                        />
 
-                        <Button style={styles.button}
-                            title="Add book manually"
-                            onPress={() => setManualMode(true)}
+                              ListFooterComponent={
+                                <View style={{ marginTop: 20, marginBottom: 100 }}>
+                                    <Button
+                                    title="Add book manually"
+                                    onPress={() => setManualMode(true)}
+                                    />
+                                </View>
+                                }
                         />
-
                     </>
 
                 ) : (
@@ -246,7 +268,8 @@ export default function AddBook() {
                         <View style={{ marginTop: 10 }}>
                             <Button style={styles.button}
                                     title="Back to search"
-                                    onPress={() => setManualMode(false)}
+                                    onPress={() => {resetBookForm() 
+                                        setManualMode(false)}}
                             />
                         </View>
 
