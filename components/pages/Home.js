@@ -123,46 +123,51 @@ export default function Home() {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
-      <Text style={styles.title}>Book recommendations</Text>
-      <BookSection title="Fantasy" books={fantasyBooks} />
-      <BookSection title="Romance" books={romanceBooks} />
-      <BookSection title="My top rated books" books={myTopRatedBooks} />
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: 120 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={styles.title}>Book recommendations</Text>
+        <BookSection title="Fantasy" books={fantasyBooks} />
+        <BookSection title="Romance" books={romanceBooks} />
+        <BookSection title="My top rated books" books={myTopRatedBooks} />
 
-      <Modal visible={modalVisible}>
-        {selectedBook && (
-          <ScrollView contentContainerStyle={styles.scroll}>
-            <Image
-              source={{ uri: selectedBook.image }}
-              style={{
-                width: 200,
-                height: 300,
-                borderRadius: 15,
-                marginBottom: 20,
-              }}
-            />
+        <Modal visible={modalVisible}>
+          {selectedBook && (
+            <ScrollView contentContainerStyle={styles.scroll}>
+              <Image
+                source={{ uri: selectedBook.image }}
+                style={{
+                  width: 200,
+                  height: 300,
+                  borderRadius: 15,
+                  marginBottom: 20,
+                }}
+              />
 
-            <Text style={styles.title}>{selectedBook.title}</Text>
-            <Text style={styles.bookInfo}>Author: {selectedBook.author}</Text>
-            <Text style={styles.bookInfo}>
-              Number of pages: {selectedBook.pages}
-            </Text>
-            <Text style={styles.bookInfo}>
-              ⭐{" "}
-              {selectedBook.userId
-                ? selectedBook.rating.toFixed(1)
-                : (selectedBook.rating * 10).toFixed(1)}
-            </Text>
-            <Text style={styles.bookInfo}>{selectedBook.description}</Text>
+              <Text style={styles.title}>{selectedBook.title}</Text>
+              <Text style={styles.bookInfo}>Author: {selectedBook.author}</Text>
+              <Text style={styles.bookInfo}>
+                Number of pages: {selectedBook.pages}
+              </Text>
+              <Text style={styles.bookInfo}>
+                ⭐{" "}
+                {selectedBook.userId
+                  ? selectedBook.rating.toFixed(1)
+                  : (selectedBook.rating * 10).toFixed(1)}
+              </Text>
+              <Text style={styles.bookInfo}>{selectedBook.description}</Text>
 
-            <Pressable
-              onPress={() => setModalVisible(false)}
-              style={styles.closeBtn}
-            >
-              <Text style={styles.closeBtnText}>Close</Text>
-            </Pressable>
-          </ScrollView>
-        )}
-      </Modal>
+              <Pressable
+                onPress={() => setModalVisible(false)}
+                style={styles.closeBtn}
+              >
+                <Text style={styles.closeBtnText}>Close</Text>
+              </Pressable>
+            </ScrollView>
+          )}
+        </Modal>
+      </ScrollView>
     </LinearGradient>
   );
 }
