@@ -22,6 +22,7 @@ export default function AddBook() {
     // BOOK FORM STATES
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const [pages, setPages] = useState("")
     const [author, setAuthor] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -74,6 +75,7 @@ export default function AddBook() {
                 : ""
             )
             setDescription(data.description || "no description")
+            setPages(data.number_of_pages || "")
             setImage(data.image || "")
             setManualMode(true)
         } catch(error){
@@ -85,6 +87,7 @@ export default function AddBook() {
     function resetBookForm(){
         setTitle("")
         setDescription("")
+        setPages("")
         setAuthor("")
         setStartDate("")
         setEndDate("")
@@ -105,6 +108,7 @@ export default function AddBook() {
             title,
             description,
             author,
+            pages: Number(pages),
             startDate,
             endDate,
             image: image,
@@ -173,7 +177,7 @@ export default function AddBook() {
                             style={styles.input}
                         />
 
-                        <Pressable style={styles.button} onPress={search}>
+                        <Pressable style={styles.button} onPress={searchBooks}>
                             <Text style={styles.buttonText}>Search</Text>
                         </Pressable>
                     
@@ -278,6 +282,13 @@ export default function AddBook() {
                             placeholder="Author"
                             value={author}
                             onChangeText={setAuthor}
+                            style={styles.input}
+                        />
+
+                        <TextInput 
+                            placeholder="Number of pages"
+                            value={pages}
+                            onChangeText={setPages}
                             style={styles.input}
                         />
 

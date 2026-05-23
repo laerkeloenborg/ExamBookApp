@@ -169,6 +169,7 @@ export default function Profile({ onLogout }) {
                 title: selectedBook.title,
                 description: selectedBook.description,
                 author: selectedBook.author,
+                pages: selectedBook.pages,
                 startDate: selectedBook.startDate,
                 endDate: selectedBook.endDate,
                 image: selectedBook.image
@@ -317,11 +318,15 @@ export default function Profile({ onLogout }) {
                                 </Text>
 
                                 <Text style={styles.modalBookAuthor}>
-                                    {selectedBook.author}
+                                    Author: {selectedBook.author}
                                 </Text>
 
                                 <Text style={styles.modalBookDescription}>
                                     {selectedBook.description}
+                                </Text>
+
+                                <Text style={styles.modalBookDescription}>
+                                    Number of pages: {selectedBook.pages}
                                 </Text>
 
                                 {selectedBook.startDate && (
