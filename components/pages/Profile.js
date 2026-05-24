@@ -27,6 +27,7 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { database } from "../../firebase.js";
 import buttons from "../../styles/Buttons.js";
 import EditBookForm from "../EditBookForm.js";
+import BookModal from "../BookModal.js";
 
 export default function Profile({ onLogout }) {
   const [name, setName] = useState("");
@@ -213,7 +214,7 @@ export default function Profile({ onLogout }) {
         author: selectedBook.author,
         pages: selectedBook.pages,
         startDate: selectedBook.startDate,
-        endDate: selectedBook.endDate || new Date().toLocaleDateString(),
+        endDate: selectedBook.endDate,
         image: selectedBook.image,
       });
       /* await loadUserBooks(getAuth().currentUser.uid) */
@@ -345,162 +346,17 @@ export default function Profile({ onLogout }) {
         </Modal>
 
         {/* ---------------------------------------- MY BOOKS ----------------------------------------------- */}
-
-        <Modal
+        <BookModal
           visible={bookModalVisible}
-          animationType="slide"
-          transparent={true}
-        >
-          <View style={styles.modalContainer}>
-            <ScrollView
-              contentContainerStyle={styles.bookModalContent}
-              showsVerticalScrollIndicator={false}
-            >
-              {selectedBook && (
-                <>
-                  <Image
-                    source={{
-                      uri:
-                        selectedBook.image || "https://via.placeholder.com/100",
-                    }}
-                    style={styles.modalBookImage}
-                  />
-
-                  {editMode ? (
-                    <EditBookForm
-                      selectedBook={selectedBook}
-                      setSelectedBook={setSelectedBook}
-                      onSave={async () => {
-                        await handleUpdateBook();
-                        setEditMode(false);
-                      }}
-                      onCancel={() => setEditMode(false)}
-                    />
-                  ) : (
-                    <>
-                      <Text style={styles.modalBookTitle}>
-                        {selectedBook.title}
-                      </Text>
-
-                      <Text style={styles.modalBookAuthor}>
-                        Author: {selectedBook.author}
-                      </Text>
-
-                      <Text style={styles.modalBookDescription}>
-                        {selectedBook.description}
-                      </Text>
-
-                      <Text style={styles.modalBookDescription}>
-                        Number of pages: {selectedBook.pages}
-                      </Text>
-
-                      {selectedBook.status === "doneReading" && (
-                        <View style={styles.reviewContainer}>
-                          {selectedBook.rating && (
-                            <Text style={styles.reviewText}>
-                              ⭐ Rating: {selectedBook.rating}/10
-                            </Text>
-                          )}
-
-                          {selectedBook.favoriteCharacter && (
-                            <Text style={styles.reviewText}>
-                              Favorite Character:{" "}
-                              {selectedBook.favoriteCharacter}
-                            </Text>
-                          )}
-
-                          {selectedBook.favoriteQuote && (
-                            <>
-                              <Text style={styles.reviewTitle}>
-                                Favorite Quote
-                              </Text>
-
-                              <Text style={styles.quoteText}>
-                                "{selectedBook.favoriteQuote}"
-                              </Text>
-                            </>
-                          )}
-                        </View>
-                      )}
-
-                      {selectedBook.startDate && (
-                        <Text style={styles.bookDate}>
-                          Started: {selectedBook.startDate}
-                        </Text>
-                      )}
-
-                      {selectedBook.endDate && (
-                        <Text style={styles.bookDate}>
-                          Finished: {selectedBook.endDate}
-                        </Text>
-                      )}
-
-                      {/* DONE BUTTON */}
-
-                      {selectedBook.status !== "doneReading" && (
-                        <Pressable
-                          style={buttons.buttonForm}
-                          onPress={() => openDoneReadingModal(selectedBook)}
-                        >
-                          <Text style={buttons.buttonText}>Done Reading</Text>
-                        </Pressable>
-                      )}
-
-                      {/* currently reading BUTTON */}
-
-                      {selectedBook.status !== "currentlyReading" && (
-                        <Pressable
-                          style={buttons.buttonForm}
-                          onPress={async () => {
-                            await UpdateBook(selectedBook.id, {
-                              status: "currentlyReading",
-                              startDate: new Date().toLocaleDateString(),
-                            });
-                            setBookModalVisible(false);
-                          }}
-                        >
-                          <Text style={buttons.buttonText}>
-                            Currently Reading
-                          </Text>
-                        </Pressable>
-                      )}
-
-                      {/* UPDATE BUTTON */}
-                      <Pressable
-                        style={buttons.buttonForm}
-                        onPress={() => setEditMode(true)}
-                      >
-                        <Text style={buttons.buttonText}>Edit book</Text>
-                      </Pressable>
-
-                      {/* DELETE BUTTON */}
-
-                      <Pressable
-                        style={buttons.deleteButton}
-                        onPress={async () => {
-                          await handleDeleteBook(selectedBook.id);
-
-                          setBookModalVisible(false);
-                        }}
-                      >
-                        <Text style={buttons.buttonText}>Delete Book</Text>
-                      </Pressable>
-
-                      {/* CLOSE */}
-
-                      <Pressable
-                        style={buttons.buttonForm}
-                        onPress={() => setBookModalVisible(false)}
-                      >
-                        <Text style={buttons.buttonText}>Close</Text>
-                      </Pressable>
-                    </>
-                  )}
-                </>
-              )}
-            </ScrollView>
-          </View>
-        </Modal>
+          selectedBook={selectedBook}
+          setSelectedBook={setSelectedBook}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          onClose={() => setBookModalVisible(false)}
+          onDelete={handleDeleteBook}
+          onUpdate={handleUpdateBook}
+          onDoneReading={openDoneReadingModal}
+        />
         {/* ---------------------------------------- Done reading review ----------------------------------------------- */}
         <Modal
           visible={doneReadingModal}
