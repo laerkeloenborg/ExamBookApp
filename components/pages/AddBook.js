@@ -134,8 +134,6 @@ export default function AddBook() {
             
             setSearch("")
             setBooks([])
-
-            alert("Book saved successfully!")
         
             resetBookForm()
             setManualMode(false)
