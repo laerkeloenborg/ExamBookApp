@@ -350,7 +350,7 @@ export default function Profile({ onLogout }) {
           transparent={true}
         >
           <View style={styles.modalContainer}>
-            <View style={styles.bookModalContent}>
+            <ScrollView contentContainerStyle={styles.bookModalContent} showsVerticalScrollIndicator={false}>
               {selectedBook && (
                 <>
                   <Image
@@ -466,7 +466,7 @@ export default function Profile({ onLogout }) {
                   </Pressable>
                 </>
               )}
-            </View>
+            </ScrollView>
           </View>
         </Modal>
         {/* ---------------------------------------- Done reading review ----------------------------------------------- */}
