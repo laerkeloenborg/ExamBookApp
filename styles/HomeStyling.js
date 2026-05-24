@@ -33,5 +33,8 @@ export default StyleSheet.create({
     scroll:{
         alignItems: "center",
         padding: 20
+    },
+    bookModal:{
+         backgroundColor: "rgba(255, 255, 255,0.9)",
     }
 })

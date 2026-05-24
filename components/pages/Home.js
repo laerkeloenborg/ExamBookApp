@@ -132,7 +132,8 @@ export default function Home() {
         <BookSection title="Romance" books={romanceBooks} />
         <BookSection title="My top rated books" books={myTopRatedBooks} />
 
-        <Modal visible={modalVisible}>
+        <Modal visible={modalVisible} animationType="slide" transparent={true}>
+            <View style={styles.bookModal}>
           {selectedBook && (
             <ScrollView contentContainerStyle={styles.scroll}>
               <Image
@@ -166,6 +167,7 @@ export default function Home() {
               </Pressable>
             </ScrollView>
           )}
+          </View>
         </Modal>
       </ScrollView>
     </LinearGradient>
