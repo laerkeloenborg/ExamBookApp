@@ -19,6 +19,7 @@ import { getAuth } from "firebase/auth";
 import { SaveBook } from "../Books.js";
 import { LinearGradient } from "expo-linear-gradient";
 import colors from "../../styles/Colors.js";
+import buttons from "../../styles/Buttons.js";
 
 export default function AddBook() {
   // SEARCH STATES
@@ -190,8 +191,8 @@ export default function AddBook() {
                 style={styles.input}
               />
 
-              <Pressable style={styles.button} onPress={searchBooks}>
-                <Text style={styles.buttonText}>Search</Text>
+              <Pressable style={buttons.buttonForm} onPress={searchBooks}>
+                <Text style={buttons.buttonText}>Search</Text>
               </Pressable>
 
               {noResults && (
@@ -238,10 +239,10 @@ export default function AddBook() {
                 ListFooterComponent={
                   <View style={{ marginTop: 20, marginBottom: 100 }}>
                     <Pressable
-                      style={styles.button}
+                      style={buttons.buttonForm}
                       onPress={() => setManualMode(true)}
                     >
-                      <Text style={styles.buttonText}>Add book manually</Text>
+                      <Text style={buttons.buttonText}>Add book manually</Text>
                     </Pressable>
                   </View>
                 }
@@ -258,23 +259,23 @@ export default function AddBook() {
                 <Image source={{ uri: image }} style={styles.bookImage} />
               ) : null}
               <Pressable
-                style={styles.button}
+                style={buttons.buttonForm}
                 onPress={async () => {
                   const imageUri = await takePhoto();
                   if (imageUri) await saveBookImage(imageUri);
                 }}
               >
-                <Text style={styles.buttonText}>Take photo</Text>
+                <Text style={buttons.buttonText}>Take photo</Text>
               </Pressable>
 
               <Pressable
-                style={styles.button}
+                style={buttons.buttonForm}
                 onPress={async () => {
                   const imageUri = await pickImageFromGallery();
                   if (imageUri) await saveBookImage(imageUri);
                 }}
               >
-                <Text style={styles.buttonText}>Pick photo from gallery</Text>
+                <Text style={buttons.buttonText}>Pick photo from gallery</Text>
               </Pressable>
 
               <TextInput
@@ -320,18 +321,18 @@ export default function AddBook() {
                 style={styles.input}
               />
 
-              <Pressable style={styles.button} onPress={saveBook}>
-                <Text style={styles.buttonText}>Save book</Text>
+              <Pressable style={buttons.buttonForm} onPress={saveBook}>
+                <Text style={buttons.buttonText}>Save book</Text>
               </Pressable>
 
               <Pressable
-                style={styles.button}
+                style={buttons.buttonForm}
                 onPress={() => {
                   resetBookForm();
                   setManualMode(false);
                 }}
               >
-                <Text style={styles.buttonText}>Back to search</Text>
+                <Text style={buttons.buttonText}>Back to search</Text>
               </Pressable>
             </ScrollView>
           )}

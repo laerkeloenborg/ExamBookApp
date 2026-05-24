@@ -60,24 +60,6 @@ export default StyleSheet.create({
     marginBottom: 20,
   },
 
-  button: {
-    backgroundColor: colors.solidGreen,
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: "center",
-    marginTop: 10,
-  },
-
-  buttonPressed: {
-    opacity: 0.7,
-  },
-
-  buttonText: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-
   resultInfo: {
     fontSize: 16,
     textAlign: "center",

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import colors from "../../styles/Colors.js";
 import styles from "../../styles/HomeStyling.js";
+import buttons from "../../styles/Buttons.js";
 import { useEffect, useState } from "react";
 import { ReadBook } from "../Books.js";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
@@ -161,9 +162,9 @@ export default function Home() {
 
               <Pressable
                 onPress={() => setModalVisible(false)}
-                style={styles.closeBtn}
+                style={buttons.buttonForm}
               >
-                <Text style={styles.closeBtnText}>Close</Text>
+                <Text style={buttons.buttonText}>Close</Text>
               </Pressable>
             </ScrollView>
           )}

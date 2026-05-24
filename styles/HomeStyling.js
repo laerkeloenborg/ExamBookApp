@@ -19,17 +19,6 @@ export default StyleSheet.create({
         marginTop: 10,
         fontSize: 18
     },
-    closeBtn:{
-        marginTop: 30,
-        backgroundColor: colors.bioGreen,
-        paddingVertical: 15,
-        paddingHorizontal: 40,
-        borderRadius: 15
-    },
-    closeBtnText:{
-        color: "white",
-        fontWeight: "bold"
-    },
     scroll:{
         alignItems: "center",
         padding: 20

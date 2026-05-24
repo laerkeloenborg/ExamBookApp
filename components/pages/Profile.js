@@ -25,6 +25,7 @@ import {
 import UserBookSection from "../UserBookSection.js";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { database } from "../../firebase.js";
+import buttons from "../../styles/Buttons.js"
 
 export default function Profile({ onLogout }) {
   const [name, setName] = useState("");
@@ -292,7 +293,7 @@ export default function Profile({ onLogout }) {
                 />
 
                 <Pressable
-                  style={styles.modalButton}
+                  style={buttons.buttonForm}
                   onPress={async () => {
                     const imageUri = await pickImageFromGallery(setImage);
 
@@ -301,11 +302,11 @@ export default function Profile({ onLogout }) {
                     }
                   }}
                 >
-                  <Text style={styles.buttonText}>Choose from gallery</Text>
+                  <Text style={buttons.buttonText}>Choose from gallery</Text>
                 </Pressable>
 
                 <Pressable
-                  style={styles.modalButton}
+                  style={buttons.buttonForm}
                   onPress={async () => {
                     const imageUri = await takePhoto();
 
@@ -314,7 +315,7 @@ export default function Profile({ onLogout }) {
                     }
                   }}
                 >
-                  <Text style={styles.buttonText}>Take photo</Text>
+                  <Text style={buttons.buttonText}>Take photo</Text>
                 </Pressable>
 
                 <View style={styles.userInfo}>
@@ -323,19 +324,19 @@ export default function Profile({ onLogout }) {
                 </View>
 
                 <Pressable
-                  style={[styles.modalButton, styles.deleteButton]}
+                  style={buttons.deleteButton}
                   onPress={handleDeleteUser}
                 >
-                  <Text style={styles.buttonText}>Delete user</Text>
+                  <Text style={buttons.buttonText}>Delete user</Text>
                 </Pressable>
 
                 <Pressable
-                  style={styles.modalButton}
+                  style={buttons.buttonForm}
                   onPress={() => {
                     setModalVisible(false);
                   }}
                 >
-                  <Text style={styles.buttonText}>Close</Text>
+                  <Text style={buttons.buttonText}>Close</Text>
                 </Pressable>
               </View>
             </View>
@@ -419,10 +420,10 @@ export default function Profile({ onLogout }) {
 
                   {selectedBook.status !== "doneReading" && (
                     <Pressable
-                      style={styles.statusButton}
+                      style={buttons.buttonForm}
                       onPress={() => openDoneReadingModal(selectedBook)}
                     >
-                      <Text style={styles.buttonText}>Done Reading</Text>
+                      <Text style={buttons.buttonText}>Done Reading</Text>
                     </Pressable>
                   )}
 
@@ -430,7 +431,7 @@ export default function Profile({ onLogout }) {
 
                   {selectedBook.status !== "currentlyReading" && (
                     <Pressable
-                      style={styles.statusButton}
+                      style={buttons.buttonForm}
                       onPress={async () => {
                         await UpdateBook(selectedBook.id, {
                           status: "currentlyReading",
@@ -439,30 +440,30 @@ export default function Profile({ onLogout }) {
                         setBookModalVisible(false);
                       }}
                     >
-                      <Text style={styles.buttonText}>Currently Reading</Text>
+                      <Text style={buttons.buttonText}>Currently Reading</Text>
                     </Pressable>
                   )}
 
                   {/* DELETE BUTTON */}
 
                   <Pressable
-                    style={styles.deleteButton}
+                    style={buttons.deleteButton}
                     onPress={async () => {
                       await handleDeleteBook(selectedBook.id);
 
                       setBookModalVisible(false);
                     }}
                   >
-                    <Text style={styles.buttonText}>Delete Book</Text>
+                    <Text style={buttons.buttonText}>Delete Book</Text>
                   </Pressable>
 
                   {/* CLOSE */}
 
                   <Pressable
-                    style={styles.modalButton}
+                    style={buttons.buttonForm}
                     onPress={() => setBookModalVisible(false)}
                   >
-                    <Text style={styles.buttonText}>Close</Text>
+                    <Text style={buttons.buttonText}>Close</Text>
                   </Pressable>
                 </>
               )}
@@ -483,14 +484,14 @@ export default function Profile({ onLogout }) {
                 placeholder="Favorite character"
                 value={favoriteCharacter}
                 onChangeText={setFavoriteCharacter}
-                style={styles.input}
+                style={styles.reviewInput}
               />
 
               <TextInput
                 placeholder="Favorite quote"
                 value={favoriteQuote}
                 onChangeText={setFavoriteQuote}
-                style={[styles.input, { height: 120 }]}
+                style={[styles.reviewInput, { height: 120 }]}
                 multiline
               />
 
@@ -515,7 +516,7 @@ export default function Profile({ onLogout }) {
               <Text style={styles.ratingText}>Rating: {rating}/10</Text>
 
               <Pressable
-                style={styles.statusButton}
+                style={buttons.buttonForm}
                 onPress={async () => {
                   await UpdateBook(selectedBook.id, {
                     status: "doneReading",
@@ -530,14 +531,14 @@ export default function Profile({ onLogout }) {
                   setBookModalVisible(false);
                 }}
               >
-                <Text style={styles.buttonText}>Save Review</Text>
+                <Text style={buttons.buttonText}>Save Review</Text>
               </Pressable>
 
               <Pressable
-                style={styles.modalButton}
+                style={buttons.buttonForm}
                 onPress={() => setDoneReadingModal(false)}
               >
-                <Text style={styles.buttonText}>Cancel</Text>
+                <Text style={buttons.buttonText}>Cancel</Text>
               </Pressable>
             </View>
           </View>
@@ -573,8 +574,8 @@ export default function Profile({ onLogout }) {
         />
 
         {/* ---------------------------------------- LOG OUT BUTTON ----------------------------------------------- */}
-        <Pressable style={styles.logoutButton} onPress={logout}>
-          <Text style={styles.buttonText}>Logout</Text>
+        <Pressable style={buttons.buttonForm} onPress={logout}>
+          <Text style={buttons.buttonText}>Logout</Text>
         </Pressable>
       </LinearGradient>
     </ScrollView>
