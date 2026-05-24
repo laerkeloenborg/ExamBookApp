@@ -10,6 +10,7 @@ export default function EditBookForm({
 }) {
   return (
     <>
+    <Text style={editBook.inputLabel}>Title</Text>
       <TextInput
         value={selectedBook.title}
         onChangeText={(text) =>
@@ -22,6 +23,7 @@ export default function EditBookForm({
         placeholder="title"
       />
 
+<Text style={editBook.inputLabel}>Author</Text>
       <TextInput
         value={selectedBook.author}
         onChangeText={(text) =>
@@ -34,6 +36,7 @@ export default function EditBookForm({
         placeholder="author"
       />
 
+<Text style={editBook.inputLabel}>Description</Text>
       <TextInput
         value={selectedBook.description}
         onChangeText={(text) =>
@@ -46,6 +49,7 @@ export default function EditBookForm({
         placeholder="description"
       />
 
+<Text style={editBook.inputLabel}>Pages</Text>
       <TextInput
         value={selectedBook.pages?.toString()}
         onChangeText={(text) =>
@@ -59,6 +63,7 @@ export default function EditBookForm({
         placeholder="number of pages"
       />
 
+<Text style={editBook.inputLabel}>Start date</Text>
       <TextInput
         value={selectedBook.startDate}
         onChangeText={(text) =>
@@ -71,6 +76,7 @@ export default function EditBookForm({
         placeholder="start date"
       />
 
+<Text style={editBook.inputLabel}>End date</Text>
       <TextInput
         value={selectedBook.endDate}
         onChangeText={(text) =>

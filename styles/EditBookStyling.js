@@ -11,4 +11,12 @@ export default StyleSheet.create({
     marginVertical: 10,
     fontSize: 16,
   },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    alignSelf: "flex-start",
+    marginTop: 10,
+    marginBottom: 5,
+    color: colors.solidGreen
+},
 });
