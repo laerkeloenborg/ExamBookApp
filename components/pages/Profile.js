@@ -29,6 +29,7 @@ import buttons from "../../styles/Buttons.js";
 import EditBookForm from "../EditBookForm.js";
 import BookModal from "../BookModal.js";
 import ProfileHeader from "../ProfileHeader.js";
+import DoneReadingModal from "../DoneReadingModal.js";
 
 export default function Profile({ onLogout }) {
   const [name, setName] = useState("");
@@ -283,79 +284,21 @@ export default function Profile({ onLogout }) {
           onDoneReading={openDoneReadingModal}
         />
         {/* ---------------------------------------- Done reading review ----------------------------------------------- */}
-        <Modal
+        <DoneReadingModal
           visible={doneReadingModal}
-          animationType="slide"
-          transparent={true}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.bookModalContent}>
-              <Text style={styles.modalTitle}>Finish Book</Text>
-
-              <TextInput
-                placeholder="Favorite character"
-                value={favoriteCharacter}
-                onChangeText={setFavoriteCharacter}
-                style={styles.reviewInput}
-              />
-
-              <TextInput
-                placeholder="Favorite quote"
-                value={favoriteQuote}
-                onChangeText={setFavoriteQuote}
-                style={[styles.reviewInput, { height: 120 }]}
-                multiline
-              />
-
-              <View style={styles.starContainer}>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
-                  <Pressable key={star} onPress={() => setRating(star)}>
-                    <Text
-                      style={{
-                        fontSize: 30,
-                        marginHorizontal: 2,
-                        color:
-                          star <= rating
-                            ? colors.markedStar
-                            : colors.defaultStar,
-                      }}
-                    >
-                      ★
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-              <Text style={styles.ratingText}>Rating: {rating}/10</Text>
-
-              <Pressable
-                style={buttons.buttonForm}
-                onPress={async () => {
-                  await UpdateBook(selectedBook.id, {
-                    status: "doneReading",
-                    endDate: new Date().toLocaleDateString(),
-
-                    favoriteCharacter,
-                    favoriteQuote,
-                    rating: Number(rating),
-                  });
-
-                  setDoneReadingModal(false);
-                  setBookModalVisible(false);
-                }}
-              >
-                <Text style={buttons.buttonText}>Save Review</Text>
-              </Pressable>
-
-              <Pressable
-                style={buttons.buttonForm}
-                onPress={() => setDoneReadingModal(false)}
-              >
-                <Text style={buttons.buttonText}>Cancel</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
-
+          selectedBook={selectedBook}
+          favoriteCharacter={favoriteCharacter}
+          setFavoriteCharacter={setFavoriteCharacter}
+          favoriteQuote={favoriteQuote}
+          setFavoriteQuote={setFavoriteQuote}
+          rating={rating}
+          setRating={setRating}
+          onClose={() => setDoneReadingModal(false)}
+          onFinish={() => {
+            setDoneReadingModal(false);
+            setBookModalVisible(false);
+          }}
+        />
         {/* ---------------------------------------- Book sections ----------------------------------------------- */}
         <UserBookSection
           style={styles.currently}
