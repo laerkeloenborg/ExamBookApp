@@ -44,6 +44,7 @@ export default StyleSheet.create({
     shadowRadius: 10,
     elevation: 6,
   },
+
   userInfo: {
     alignItems: "center",
     marginBottom: 25,
@@ -60,45 +61,6 @@ export default StyleSheet.create({
     fontSize: 16,
     color: colors.lightText,
     marginTop: 5,
-  },
-
-  modalButton: {
-    width: "100%",
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 15,
-    backgroundColor: colors.solidGreen,
-    padding: 5,
-  },
-
-  logoutButton: {
-    width: "100%",
-    backgroundColor: colors.solidGreen,
-    paddingVertical: 18,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 30,
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-
-  deleteButton: {
-    backgroundColor: colors.danger,
-  },
-
-  buttonText: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: "bold",
   },
 
   modalContainer: {
@@ -149,6 +111,7 @@ export default StyleSheet.create({
     padding: 0,
     marginHorizontal: 15,
   },
+
   userBookImage: {
     width: "100%",
     height: 150,
@@ -176,13 +139,6 @@ export default StyleSheet.create({
     marginTop: 10,
     gap: 10,
     backgroundColor: colors.solidGreen,
-  },
-
-  statusButton: {
-    backgroundColor: colors.solidGreen,
-    padding: 5,
-    borderRadius: 10,
-    alignItems: "center",
   },
 
   bookItem: {
@@ -279,8 +235,9 @@ export default StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
   },
-  input: {
-     width: "100%",
+
+  reviewInput: {
+    width: "100%",
     backgroundColor: "white",
 
     borderWidth: 2,

@@ -25,6 +25,11 @@ import {
 import UserBookSection from "../UserBookSection.js";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { database } from "../../firebase.js";
+import buttons from "../../styles/Buttons.js";
+import EditBookForm from "../EditBookForm.js";
+import BookModal from "../BookModal.js";
+import ProfileHeader from "../ProfileHeader.js";
+import DoneReadingModal from "../DoneReadingModal.js";
 
 export default function Profile({ onLogout }) {
   const [name, setName] = useState("");
@@ -185,20 +190,20 @@ export default function Profile({ onLogout }) {
   // --------------------------------------------------  USERS BOOKS ----------------------------------------------------
 
   const openBookDetails = (book) => {
-    setSelectedBook(book)
-    setBookModalVisible(true)
-    setEditMode(false)
+    setSelectedBook(book);
+    setBookModalVisible(true);
+    setEditMode(false);
   };
 
   function openDoneReadingModal(book) {
-    setSelectedBook(book)
+    setSelectedBook(book);
 
     setFavoriteCharacter(book.favoriteCharacter || "");
     setFavoriteQuote(book.favoriteQuote || "");
     setRating(book.rating || 0);
 
-    setBookModalVisible(false)
-    setDoneReadingModal(true)
+    setBookModalVisible(false);
+    setDoneReadingModal(true);
   }
 
   async function handleUpdateBook() {
@@ -211,7 +216,7 @@ export default function Profile({ onLogout }) {
         author: selectedBook.author,
         pages: selectedBook.pages,
         startDate: selectedBook.startDate,
-        endDate: selectedBook.endDate || new Date().toLocaleDateString(),
+        endDate: selectedBook.endDate,
         image: selectedBook.image,
       });
       /* await loadUserBooks(getAuth().currentUser.uid) */
@@ -258,291 +263,42 @@ export default function Profile({ onLogout }) {
         style={styles.container}
       >
         {/* ---------------------------------------- PROFILE HEADER ----------------------------------------------- */}
-        <View style={styles.header}>
-          <Text style={styles.title}>{name}'s bookshelf</Text>
-          <Pressable onPress={() => setModalVisible(true)}>
-            <Image
-              source={{
-                uri:
-                  image ||
-                  "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-              }}
-              style={styles.profileImage}
-            />
-          </Pressable>
-        </View>
-
-        <Modal visible={modalVisible}>
-          <LinearGradient
-            colors={colors.gradient}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.container}
-          >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalTitle}>Profile settings</Text>
-                <Image
-                  source={{
-                    uri:
-                      image ||
-                      "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-                  }}
-                  style={styles.largeProfileImage}
-                />
-
-                <Pressable
-                  style={styles.modalButton}
-                  onPress={async () => {
-                    const imageUri = await pickImageFromGallery(setImage);
-
-                    if (imageUri) {
-                      saveProfileImage(imageUri);
-                    }
-                  }}
-                >
-                  <Text style={styles.buttonText}>Choose from gallery</Text>
-                </Pressable>
-
-                <Pressable
-                  style={styles.modalButton}
-                  onPress={async () => {
-                    const imageUri = await takePhoto();
-
-                    if (imageUri) {
-                      saveProfileImage(imageUri);
-                    }
-                  }}
-                >
-                  <Text style={styles.buttonText}>Take photo</Text>
-                </Pressable>
-
-                <View style={styles.userInfo}>
-                  <Text style={styles.userName}>{name}</Text>
-                  <Text style={styles.userMail}>{mail}</Text>
-                </View>
-
-                <Pressable
-                  style={[styles.modalButton, styles.deleteButton]}
-                  onPress={handleDeleteUser}
-                >
-                  <Text style={styles.buttonText}>Delete user</Text>
-                </Pressable>
-
-                <Pressable
-                  style={styles.modalButton}
-                  onPress={() => {
-                    setModalVisible(false);
-                  }}
-                >
-                  <Text style={styles.buttonText}>Close</Text>
-                </Pressable>
-              </View>
-            </View>
-          </LinearGradient>
-        </Modal>
-
+        <ProfileHeader
+          name={name}
+          mail={mail}
+          image={image}
+          setImage={setImage}
+          saveProfileImage={saveProfileImage}
+          handleDeleteUser={handleDeleteUser}
+        />
         {/* ---------------------------------------- MY BOOKS ----------------------------------------------- */}
-
-        <Modal
+        <BookModal
           visible={bookModalVisible}
-          animationType="slide"
-          transparent={true}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.bookModalContent}>
-              {selectedBook && (
-                <>
-                  <Image
-                    source={{
-                      uri:
-                        selectedBook.image || "https://via.placeholder.com/100",
-                    }}
-                    style={styles.modalBookImage}
-                  />
-
-                  <Text style={styles.modalBookTitle}>
-                    {selectedBook.title}
-                  </Text>
-
-                  <Text style={styles.modalBookAuthor}>
-                    Author: {selectedBook.author}
-                  </Text>
-
-                  <Text style={styles.modalBookDescription}>
-                    {selectedBook.description}
-                  </Text>
-
-                  <Text style={styles.modalBookDescription}>
-                    Number of pages: {selectedBook.pages}
-                  </Text>
-
-                  {selectedBook.status === "doneReading" && (
-                    <View style={styles.reviewContainer}>
-                      {selectedBook.rating && (
-                        <Text style={styles.reviewText}>
-                          ⭐ Rating: {selectedBook.rating}/10
-                        </Text>
-                      )}
-
-                      {selectedBook.favoriteCharacter && (
-                        <Text style={styles.reviewText}>
-                          Favorite Character: {selectedBook.favoriteCharacter}
-                        </Text>
-                      )}
-
-                      {selectedBook.favoriteQuote && (
-                        <>
-                          <Text style={styles.reviewTitle}>Favorite Quote</Text>
-
-                          <Text style={styles.quoteText}>
-                            "{selectedBook.favoriteQuote}"
-                          </Text>
-                        </>
-                      )}
-                    </View>
-                  )}
-
-                  {selectedBook.startDate && (
-                    <Text style={styles.bookDate}>
-                      Started: {selectedBook.startDate}
-                    </Text>
-                  )}
-
-                  {selectedBook.endDate && (
-                    <Text style={styles.bookDate}>
-                      Finished: {selectedBook.endDate}
-                    </Text>
-                  )}
-
-                  {/* DONE BUTTON */}
-
-                  {selectedBook.status !== "doneReading" && (
-                    <Pressable
-                      style={styles.statusButton}
-                      onPress={() => openDoneReadingModal(selectedBook)}
-                    >
-                      <Text style={styles.buttonText}>Done Reading</Text>
-                    </Pressable>
-                  )}
-
-                  {/* currently reading BUTTON */}
-
-                  {selectedBook.status !== "currentlyReading" && (
-                    <Pressable
-                      style={styles.statusButton}
-                      onPress={async () => {
-                        await UpdateBook(selectedBook.id, {
-                          status: "currentlyReading",
-                          startDate: new Date().toLocaleDateString(),
-                        });
-                        setBookModalVisible(false);
-                      }}
-                    >
-                      <Text style={styles.buttonText}>Currently Reading</Text>
-                    </Pressable>
-                  )}
-
-                  {/* DELETE BUTTON */}
-
-                  <Pressable
-                    style={styles.deleteButton}
-                    onPress={async () => {
-                      await handleDeleteBook(selectedBook.id);
-
-                      setBookModalVisible(false);
-                    }}
-                  >
-                    <Text style={styles.buttonText}>Delete Book</Text>
-                  </Pressable>
-
-                  {/* CLOSE */}
-
-                  <Pressable
-                    style={styles.modalButton}
-                    onPress={() => setBookModalVisible(false)}
-                  >
-                    <Text style={styles.buttonText}>Close</Text>
-                  </Pressable>
-                </>
-              )}
-            </View>
-          </View>
-        </Modal>
+          selectedBook={selectedBook}
+          setSelectedBook={setSelectedBook}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          onClose={() => setBookModalVisible(false)}
+          onDelete={handleDeleteBook}
+          onUpdate={handleUpdateBook}
+          onDoneReading={openDoneReadingModal}
+        />
         {/* ---------------------------------------- Done reading review ----------------------------------------------- */}
-        <Modal
+        <DoneReadingModal
           visible={doneReadingModal}
-          animationType="slide"
-          transparent={true}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.bookModalContent}>
-              <Text style={styles.modalTitle}>Finish Book</Text>
-
-              <TextInput
-                placeholder="Favorite character"
-                value={favoriteCharacter}
-                onChangeText={setFavoriteCharacter}
-                style={styles.input}
-              />
-
-              <TextInput
-                placeholder="Favorite quote"
-                value={favoriteQuote}
-                onChangeText={setFavoriteQuote}
-                style={[styles.input, { height: 120 }]}
-                multiline
-              />
-
-              <View style={styles.starContainer}>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
-                  <Pressable key={star} onPress={() => setRating(star)}>
-                    <Text
-                      style={{
-                        fontSize: 30,
-                        marginHorizontal: 2,
-                        color:
-                          star <= rating
-                            ? colors.markedStar
-                            : colors.defaultStar,
-                      }}
-                    >
-                      ★
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-              <Text style={styles.ratingText}>Rating: {rating}/10</Text>
-
-              <Pressable
-                style={styles.statusButton}
-                onPress={async () => {
-                  await UpdateBook(selectedBook.id, {
-                    status: "doneReading",
-                    endDate: new Date().toLocaleDateString(),
-
-                    favoriteCharacter,
-                    favoriteQuote,
-                    rating: Number(rating),
-                  });
-
-                  setDoneReadingModal(false);
-                  setBookModalVisible(false);
-                }}
-              >
-                <Text style={styles.buttonText}>Save Review</Text>
-              </Pressable>
-
-              <Pressable
-                style={styles.modalButton}
-                onPress={() => setDoneReadingModal(false)}
-              >
-                <Text style={styles.buttonText}>Cancel</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
-
+          selectedBook={selectedBook}
+          favoriteCharacter={favoriteCharacter}
+          setFavoriteCharacter={setFavoriteCharacter}
+          favoriteQuote={favoriteQuote}
+          setFavoriteQuote={setFavoriteQuote}
+          rating={rating}
+          setRating={setRating}
+          onClose={() => setDoneReadingModal(false)}
+          onFinish={() => {
+            setDoneReadingModal(false);
+            setBookModalVisible(false);
+          }}
+        />
         {/* ---------------------------------------- Book sections ----------------------------------------------- */}
         <UserBookSection
           style={styles.currently}
@@ -573,8 +329,8 @@ export default function Profile({ onLogout }) {
         />
 
         {/* ---------------------------------------- LOG OUT BUTTON ----------------------------------------------- */}
-        <Pressable style={styles.logoutButton} onPress={logout}>
-          <Text style={styles.buttonText}>Logout</Text>
+        <Pressable style={buttons.buttonForm} onPress={logout}>
+          <Text style={buttons.buttonText}>Logout</Text>
         </Pressable>
       </LinearGradient>
     </ScrollView>

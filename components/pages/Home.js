@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import colors from "../../styles/Colors.js";
 import styles from "../../styles/HomeStyling.js";
+import buttons from "../../styles/Buttons.js";
 import { useEffect, useState } from "react";
 import { ReadBook } from "../Books.js";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
@@ -132,7 +133,8 @@ export default function Home() {
         <BookSection title="Romance" books={romanceBooks} />
         <BookSection title="My top rated books" books={myTopRatedBooks} />
 
-        <Modal visible={modalVisible}>
+        <Modal visible={modalVisible} animationType="slide" transparent={true}>
+            <View style={styles.bookModal}>
           {selectedBook && (
             <ScrollView contentContainerStyle={styles.scroll}>
               <Image
@@ -160,12 +162,13 @@ export default function Home() {
 
               <Pressable
                 onPress={() => setModalVisible(false)}
-                style={styles.closeBtn}
+                style={buttons.buttonForm}
               >
-                <Text style={styles.closeBtnText}>Close</Text>
+                <Text style={buttons.buttonText}>Close</Text>
               </Pressable>
             </ScrollView>
           )}
+          </View>
         </Modal>
       </ScrollView>
     </LinearGradient>
