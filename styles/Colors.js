@@ -16,6 +16,7 @@ export default {
     gradient: ["#00b4d8", "#80ed99", "#d9f99d"],
 
     solidGreen: "#046159",
+    transparentSolidGreen: "rgba(4, 97, 89, 0.85)",
 
     defaultStar: "#d3d3d3",
     markedStar: "#FFD700" 
