@@ -8,11 +8,13 @@ export default function EditBookForm({
   onSave,
   onCancel,
 }) {
+  console.log(selectedBook)
   return (
     <>
     <Text style={editBook.inputLabel}>Title</Text>
       <TextInput
         value={selectedBook.title}
+        editable={!selectedBook.isApiBook}
         onChangeText={(text) =>
           setSelectedBook({
             ...selectedBook,
@@ -21,11 +23,14 @@ export default function EditBookForm({
         }
         style={editBook.editInput}
         placeholder="title"
+       
       />
+     
 
 <Text style={editBook.inputLabel}>Author</Text>
       <TextInput
         value={selectedBook.author}
+        editable={!selectedBook.isApiBook}
         onChangeText={(text) =>
           setSelectedBook({
             ...selectedBook,
@@ -39,6 +44,7 @@ export default function EditBookForm({
 <Text style={editBook.inputLabel}>Description</Text>
       <TextInput
         value={selectedBook.description}
+        editable={!selectedBook.isApiBook}
         onChangeText={(text) =>
           setSelectedBook({
             ...selectedBook,
@@ -52,6 +58,7 @@ export default function EditBookForm({
 <Text style={editBook.inputLabel}>Pages</Text>
       <TextInput
         value={selectedBook.pages?.toString()}
+        editable={!selectedBook.isApiBook}
         onChangeText={(text) =>
           setSelectedBook({
             ...selectedBook,
