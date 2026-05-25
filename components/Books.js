@@ -81,7 +81,24 @@ export async function DeleteBook(id) {
 
 export async function UpdateBook(id, updatedData) {
   try {
-    await updateDoc(doc(database, "books", id), updatedData);
+    let dataToUpdate
+    if(updatedData.isApiBook){
+        dataToUpdate={
+            startDate: updatedData.startDate,
+            endDate: updatedData.endDate,
+        }
+    } else {
+        dataToUpdate = {
+            title: updatedData.title,
+            description: updatedData.description,
+            author: updatedData.author,
+            pages: Number(updatedData.pages),
+            startDate: updatedData.startDate,
+            endDate: updatedData.endDate,
+        }
+    }
+
+    await updateDoc(doc(database, "books", id), dataToUpdate);
     console.log("Book updated successfully!");
   } catch (error) {
     console.error("Error updating book:", error);

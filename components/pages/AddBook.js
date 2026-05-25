@@ -29,6 +29,7 @@ export default function AddBook() {
 
   // MANUAL MODE
   const [manualMode, setManualMode] = useState(false);
+  const [isApiBook, setIsApiBook] = useState(false)
 
   // BOOK FORM STATES
   const [title, setTitle] = useState("");
@@ -84,6 +85,7 @@ export default function AddBook() {
       setPages(data.number_of_pages || "");
       setImage(data.image || "");
       setManualMode(true);
+      setIsApiBook(true)
     } catch (error) {
       console.log(error);
     }
@@ -104,6 +106,7 @@ export default function AddBook() {
   async function saveBook() {
     const auth = getAuth();
     const user = auth.currentUser;
+    console.log("manualMode:", manualMode);
     if (!user) {
       alert("You have to be logged in to save a book");
       return;
@@ -119,6 +122,8 @@ export default function AddBook() {
       image: image,
       status: "wantsToRead",
       createdAt: new Date(),
+
+      isApiBook: isApiBook,
     };
 
     try {
@@ -240,7 +245,9 @@ export default function AddBook() {
                   <View style={{ marginTop: 20, marginBottom: 100 }}>
                     <Pressable
                       style={buttons.buttonForm}
-                      onPress={() => setManualMode(true)}
+                      onPress={() => {setManualMode(true)
+                        setIsApiBook(false)
+                      }}
                     >
                       <Text style={buttons.buttonText}>Add book manually</Text>
                     </Pressable>
