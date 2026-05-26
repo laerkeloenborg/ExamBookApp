@@ -133,7 +133,7 @@ export default function Login({onLogin}){
         >
             {!userId && 
             <>
-                <Text style={styles.title}>BookShare</Text>
+                <Text style={styles.title}>BookShelf</Text>
                 <Pressable style={[styles.button, styles.googleButton]} onPress={() => promptAsync({useProxy: true})}>
                     <Text style={styles.buttonText}>Google login</Text>
                 </Pressable>
@@ -141,8 +141,6 @@ export default function Login({onLogin}){
                 <Pressable style={[styles.button, styles.bioAndModalButton]} onPress={handleBioLogin}>
                     <Text style={styles.buttonText}>Log in with bio</Text>
                 </Pressable>
-                
-                <Text style={styles.title}>Login</Text>
 
                 <TextInput placeholder="Email" onChangeText={newText => setEnteredEmail(newText)} value={enteredEmail} style={styles.input}/>
                 <TextInput placeholder="Password" onChangeText={newText => setEnteredPassword(newText)} value={enteredPassword} style={styles.input} secureTextEntry/>
