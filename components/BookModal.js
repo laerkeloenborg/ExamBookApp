@@ -4,7 +4,8 @@
   ScrollView,
   Image,
   Text,
-  Pressable,
+  Pressable, 
+  Alert,
 } from "react-native";
 
 import styles from "../styles/ProfileStyling.js";
@@ -154,17 +155,28 @@ export default function BookModal({
 
                       {/* DELETE BUTTON */}
 
-                      <Pressable
+                       <Pressable
                         style={buttons.deleteButton}
-                        onPress={async () => {
-                          await onDelete(selectedBook.id);
-
-                          onClose(false);
-                        }}
-                      >
+                        onPress={() => {
+                          Alert.alert(
+                            "Delete book",
+                            `Are you sure you want to delete "${selectedBook.title}"?`,
+                            [{
+                              text: "Cancel",
+                              style: "cancel"
+                            },{
+                              text: "Delete",
+                              style: "destructive",
+                              onPress: async () => {
+                                await onDelete(selectedBook.id)
+                                onClose(false)
+                              },
+                            },
+                          ]
+                          )
+                        }}>
                         <Text style={buttons.buttonText}>Delete Book</Text>
                       </Pressable>
-
                       {/* CLOSE */}
 
                       <Pressable

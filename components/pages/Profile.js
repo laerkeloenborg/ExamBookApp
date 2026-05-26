@@ -244,11 +244,6 @@ export default function Profile({ onLogout }) {
   async function handleDeleteBook(id) {
     try {
       await DeleteBook(id);
-      /*   const auth = getAuth()
-              const user = auth.currentUser
-              if (user) {
-                  await loadUserBooks(user.uid)
-              } */
     } catch (error) {
       console.error("Failed to delete book:", error);
     }
