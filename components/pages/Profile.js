@@ -116,19 +116,6 @@ export default function Profile({ onLogout }) {
     };
   }, []);
 
-  /* useEffect(() => {
-        const auth = getAuth();
-        const unsubscribe = auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                setName(user.displayName || "User")
-                setMail(user.email || "")
-                setImage(user.photoURL || null)
-                await loadUserBooks(user.uid)
-            }
-        })
-        return () => unsubscribe()
-    }, []) */
-
   async function logout() {
     await signOut(getAuth());
     onLogout();
@@ -219,7 +206,6 @@ export default function Profile({ onLogout }) {
         endDate: selectedBook.endDate,
         image: selectedBook.image,
       });
-      /* await loadUserBooks(getAuth().currentUser.uid) */
       setBookModalVisible(false);
     } catch (error) {
       console.error("Failed to update book:", error);
